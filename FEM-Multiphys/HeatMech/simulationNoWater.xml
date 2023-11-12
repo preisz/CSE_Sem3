@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfsSimulation xmlns="http://www.cfs++.org/simulation" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.cfs++.org/simulation 
+https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
+    <fileFormats>
+        <input>
+            <hdf5 fileName="geometry.cfs" scaleFac="1.0"/>
+        </input>
+        <output>
+            <hdf5/>
+            <text id="txt"/>
+        </output>
+        <materialData file="mat.xml" format="xml"/>
+    </fileFormats>
+    
+    <domain geometryType="3d">
+        <regionList>
+            <region name="V_S235JR" material="S235JR"/>
+        </regionList>
+    </domain>
+    
+    <fePolynomialList>
+        <Lagrange id="lagrange">
+            <isoOrder>1</isoOrder>
+        </Lagrange>
+    </fePolynomialList>
+
+    <sequenceStep index="1">
+        <analysis>
+            <static/>
+        </analysis>
+        <pdeList>
+            <heatConduction>
+                <regionList>
+                    <region name="V_S235JR" polyId="lagrange"/>
+                </regionList>
+                <bcsAndLoads>
+                    <heatFlux name="S_hole" value="181818.1818"/>
+                    <heatTransport name="S_air" volumeRegion="V_S235JR" bulkTemperature="20" heatTransferCoefficient="20"/>
+                    <heatTransport name="S_cooled" volumeRegion="V_S235JR" bulkTemperature="20" heatTransferCoefficient="20"/>                
+                </bcsAndLoads>
+                <storeResults>
+                    <nodeResult type="heatTemperature">
+                        <regionList>
+                            <region name="V_S235JR"/>
+                        </regionList>
+                    </nodeResult>
+                    <elemResult type="heatFluxDensity">
+                        <regionList>
+                            <region name="V_S235JR"/>
+                        </regionList>
+                    </elemResult>
+                    <surfRegionResult type="heatFlux">
+                        <surfRegionList>
+                            <surfRegion name="S_air" outputIds="txt"/>  <!-- Added this to calculate heatflux -->
+                            <surfRegion name="S_cooled" />
+                        </surfRegionList>
+                    </surfRegionResult>
+                </storeResults>
+            </heatConduction>
+        </pdeList>
+    </sequenceStep>
+    
+    
+    <sequenceStep index="2">
+    <analysis>
+        <static/>
+    </analysis>
+        <pdeList>
+            <mechanic subType="3d">
+                 <regionList>
+                     <region name="V_S235JR" polyId="lagrange"/>
+                 </regionList>
+                 <bcsAndLoads>
+                     <thermalStrain name="V_S235JR">
+                         <sequenceStep index="1">
+                             <quantity name="heatTemperature" pdeName="heatConduction"/>
+                             <timeFreqMapping>
+                                 <constant/>
+                             </timeFreqMapping>
+                         </sequenceStep>
+                     </thermalStrain>
+                     <fix name="S_fixed_right">
+                         <comp dof="x"/>
+                         <comp dof="y"/>
+                         <comp dof="z"/>
+                     </fix>
+                     <fix name="S_fixed_left">
+                        <comp dof="x"/>
+                        <comp dof="y"/>
+                        <comp dof="z"/>
+                    </fix>        
+                 </bcsAndLoads>
+                
+                 <storeResults>
+                     <elemResult type="vonMisesStress">
+                         <allRegions/>
+                     </elemResult>
+                     <elemResult type="mechThermalStress">
+                         <allRegions/>
+                     </elemResult>
+                     <elemResult type="mechThermalStrain">
+                         <allRegions/>
+                     </elemResult>
+                     <nodeResult type="mechDisplacement">
+                         <allRegions/>
+                     </nodeResult>
+                 </storeResults>
+             </mechanic>
+        </pdeList>
+    
+     </sequenceStep>
+    
+</cfsSimulation>

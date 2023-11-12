@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<cfsMaterialDataBase xmlns="http://www.cfs++.org/material"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.cfs++.org/material 
+https://opencfs.gitlab.io/cfs/xml/CFS-Material/CFS_Material.xsd" >
+  <material name="S235JR">
+    <mechanical>
+      <density>
+        <linear>
+          <real>7850.0</real>
+        </linear>
+      </density>
+      <elasticity>
+        <linear>
+          <isotropic>
+            <elasticityModulus>
+              <real>2.0e+11</real>
+            </elasticityModulus>
+            <poissonNumber>
+              <real>0.29</real>
+            </poissonNumber>
+          </isotropic>
+        </linear>
+      </elasticity>
+      <thermalExpansion>
+        <isotropic>
+          <real>12e-6</real>
+        </isotropic>
+        <refTemperature>
+          <real>20</real>
+        </refTemperature>
+      </thermalExpansion>
+      <damping>
+        <rayleigh>
+          <lossTangensDelta>0.01</lossTangensDelta>
+          <measuredFreq>100.0</measuredFreq>
+        </rayleigh>
+      </damping>
+    </mechanical>
+    <heatConduction>
+      <density>
+        <linear>
+          <real>7850.0</real>
+        </linear>
+      </density>
+      <heatCapacity>
+        <linear>
+          <real>461.0</real>
+        </linear>
+      </heatCapacity>
+      <heatConductivity>
+        <linear>
+          <isotropic>
+            <real>50</real> <!-- attention, in the assignment description it is given in W/mK-->
+          </isotropic>
+        </linear>
+      </heatConductivity>
+    </heatConduction>
+  </material>
+</cfsMaterialDataBase>
