@@ -35,3 +35,6 @@
 *.pdf
 *.html
 .vscode/
+
+#Benchmarking
+*/benchmark
