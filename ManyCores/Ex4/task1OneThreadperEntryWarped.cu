@@ -1,6 +1,6 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"
-#include <vector>
+#include "vector"
 #include <algorithm>
 #include <iostream>
 #include <stdio.h>
@@ -61,23 +61,6 @@ __global__ void TwoNormKernel(const double* x, int N, double* result) {
     }
 }
 
-/*__global__ void ZeroCounterKernel(const double* x, int N, unsigned* result, double tol) {   //calc 0 entries==> smaller than tol
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    int laneId = threadIdx.x % warpSize;
-    unsigned numzeros = 0;
-
-    if ( std::abs(x[tid]) < tol ){ numzeros++; }
-
-    // Warp shuffle reduction
-    for (int i = warpSize / 2; i > 0; i /= 2) {
-        numzeros += __shfl_down_sync(0xFFFFFFFF, numzeros, i, warpSize);
-    }
-
-    // The first thread in each warp adds its partial sum to the global result
-    if (laneId == 0) {
-        atomicAdd(result, numzeros);
-    }
-}*/
 __global__ void ZeroCounterKernel(const double* x, int N, unsigned* result, double tol) {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
     int laneId = threadIdx.x % warpSize;
@@ -96,14 +79,15 @@ __global__ void ZeroCounterKernel(const double* x, int N, unsigned* result, doub
 }
 
 
+
+
 int main(void){
   Timer timer;
   std::vector<int> Nvals = { 100, 1'000, 10'000, 100'000, 1'000'000, 10'000'000, 50'000'000, 100'000'000, };
-  std::cout << "****Using warps****\n";
+  std::cout << "****Using warps, one thread per entry****\n";
   std::cout << "Length of vector N, Execution time for operations" << std::endl;
 
-  for (int N : Nvals){
-     
+  for (int N : Nvals)   {     
     // Allocate and initialize arrays on CPU
   double *x = (double *)malloc(sizeof(double) * N);
   double alpha, oneNorm, twoNorm = 0;
@@ -131,18 +115,20 @@ int main(void){
   CUDA_ERRCHK(cudaMemcpy(cuda_TwoNorm, &twoNorm, sizeof(double), cudaMemcpyHostToDevice));
   CUDA_ERRCHK(cudaMemcpy(cuda_numzeros, &numzeros, sizeof(unsigned), cudaMemcpyHostToDevice));
 
-  // execute functions and measure time
-  CUDA_ERRCHK(cudaDeviceSynchronize());   
-  timer.reset(); 
-    sumVectorKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_alpha);
-    OneNormKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_OneNorm);
-    TwoNormKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_TwoNorm);
-    ZeroCounterKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_numzeros, 1e-9);
+   int warps = 32;//warpsize
+   dim3 blockSize(32);  // One thread per entry
+   dim3 gridSize((N + blockSize.x - 1) / blockSize.x);  // Adjust grid size based on vector size
+
+  CUDA_ERRCHK(cudaDeviceSynchronize()); timer.reset();
+    sumVectorKernel<<<gridSize, blockSize>>>(cuda_x, N, cuda_alpha);
+    OneNormKernel<<<gridSize, blockSize>>>(cuda_x, N, cuda_OneNorm);
+    TwoNormKernel<<<gridSize, blockSize>>>(cuda_x, N, cuda_TwoNorm);
+    ZeroCounterKernel<<<gridSize, blockSize>>>(cuda_x, N, cuda_numzeros, 1e-9);
   CUDA_ERRCHK(cudaDeviceSynchronize());   
   double elapsed = timer.get();
 
   std:: cout << N << "," << elapsed << std::endl;
- 
+  
   CUDA_ERRCHK(cudaMemcpy(&alpha, cuda_alpha, sizeof(double), cudaMemcpyDeviceToHost));
   CUDA_ERRCHK(cudaMemcpy(&oneNorm, cuda_OneNorm, sizeof(double), cudaMemcpyDeviceToHost));
   CUDA_ERRCHK(cudaMemcpy(&twoNorm, cuda_TwoNorm, sizeof(double), cudaMemcpyDeviceToHost));
@@ -154,7 +140,6 @@ int main(void){
   std::cout << "Result of 2-NORM: " << twoNorm << std::endl;
   std::cout << "Result of counting zero entries: " << numzeros << std::endl;
 */
-
   // Clean up
   CUDA_ERRCHK(cudaFree(cuda_x));
   CUDA_ERRCHK(cudaFree(cuda_alpha));CUDA_ERRCHK(cudaFree(cuda_OneNorm)); CUDA_ERRCHK(cudaFree(cuda_TwoNorm)); CUDA_ERRCHK(cudaFree(cuda_numzeros));
@@ -162,6 +147,5 @@ int main(void){
   free(x);
   }
   return EXIT_SUCCESS;
-
 
 }

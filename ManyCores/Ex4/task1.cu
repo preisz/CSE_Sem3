@@ -1,11 +1,19 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"
 #include <algorithm>
+#include <vector>
 #include <iostream>
 #include <stdio.h>
 #include <cmath> //abs
 
 #define BLOCKSIZE 256
+
+__global__ void initAll( double* cuda_alpha, double* cuda_oneNorm, double* cuda_twoNorm, unsigned* cudaNumZeros  ){
+    *cuda_alpha = 0.0;
+    *cuda_oneNorm = 0.0;
+    *cuda_twoNorm = 0.0;
+    *cudaNumZeros = 0;
+}
 
 __global__ void sumVectorKernel(const double* x, int N,  double* result) {    //calculate the sum of entries
     __shared__ double shared_mem[BLOCKSIZE];
@@ -93,15 +101,21 @@ __global__ void ZeroCounterKernel(const double* x, int N, unsigned* result, doub
 }
 
 int main(void){
-  int N = 1'000'000;
-     
+  //int N = 1'000'000;
+  Timer timer;
+  std::vector<int> Nvals = { 100, 1'000, 10'000, 100'000, 1'000'000, 10'000'000, 50'000'000, 100'000'000, };
+  std::cout << "****Using shared memory****\n";
+  std::cout << "Length of vector N, Execution time for operations" << std::endl;
+
+  for (int N : Nvals)   {
     // Allocate and initialize arrays on CPU
   double *x = (double *)malloc(sizeof(double) * N);
-  double alpha, oneNorm, twoNorm = 0;
+  double alpha = 0.0, oneNorm = 0.0, twoNorm = 0.0;
   unsigned numzeros = 0;
 
-  std::fill(x, x + 5000, 1);
-  //std::fill( x + 5000, x + 5000 + 5000, -2);
+  int a = int(N/4);
+  std::fill(x, x + a, 2);
+  std::fill( x + a, x + (a + a + a), -1);
 
 
   // Allocate and initialize arrays on GPU
@@ -122,30 +136,38 @@ int main(void){
   CUDA_ERRCHK(cudaMemcpy(cuda_TwoNorm, &twoNorm, sizeof(double), cudaMemcpyHostToDevice));
   CUDA_ERRCHK(cudaMemcpy(cuda_numzeros, &numzeros, sizeof(unsigned), cudaMemcpyHostToDevice));
 
-  
-  sumVectorKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_alpha);
-  OneNormKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_OneNorm);
-  TwoNormKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_TwoNorm);
-  ZeroCounterKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_numzeros, 1e-9);
+  // execute functions and measure time
+  CUDA_ERRCHK(cudaDeviceSynchronize());   
+  timer.reset();
+    sumVectorKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_alpha);
+    OneNormKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_OneNorm);
+    TwoNormKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_TwoNorm);
+    ZeroCounterKernel<<<BLOCKSIZE, BLOCKSIZE>>>(cuda_x, N, cuda_numzeros, 1e-9);
+  CUDA_ERRCHK(cudaDeviceSynchronize()); 
+  double elapsed = timer.get(); // wait for kernel to finish, then print elapsed time
 
-  
+  std:: cout << N << "," << elapsed << std::endl;
+
   CUDA_ERRCHK(cudaMemcpy(&alpha, cuda_alpha, sizeof(double), cudaMemcpyDeviceToHost));
   CUDA_ERRCHK(cudaMemcpy(&oneNorm, cuda_OneNorm, sizeof(double), cudaMemcpyDeviceToHost));
   CUDA_ERRCHK(cudaMemcpy(&twoNorm, cuda_TwoNorm, sizeof(double), cudaMemcpyDeviceToHost));
   CUDA_ERRCHK(cudaMemcpy(&numzeros, cuda_numzeros, sizeof(unsigned), cudaMemcpyDeviceToHost));
 
+/* DEBUG PART
   std::cout << "Result of summing entries: " << alpha << std::endl;
   std::cout << "Result of 1-NORM: " << oneNorm << std::endl;
   std::cout << "Result of 2-NORM: " << twoNorm << std::endl;
   std::cout << "Result of counting zero entries: " << numzeros << std::endl;
+*/
 
   // Clean up
   CUDA_ERRCHK(cudaFree(cuda_x));
-  CUDA_ERRCHK(cudaFree(cuda_alpha));CUDA_ERRCHK(cudaFree(cuda_OneNorm)); CUDA_ERRCHK(cudaFree(cuda_TwoNorm)); CUDA_ERRCHK(cudaFree(cuda_numzeros));
+  CUDA_ERRCHK(cudaFree(cuda_alpha));CUDA_ERRCHK(cudaFree(cuda_OneNorm)); CUDA_ERRCHK(cudaFree(cuda_TwoNorm)); 
+  CUDA_ERRCHK(cudaFree(cuda_numzeros));
 
   free(x);
 
+  }
   return EXIT_SUCCESS;
-
 
 }
