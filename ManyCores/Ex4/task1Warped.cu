@@ -61,23 +61,6 @@ __global__ void TwoNormKernel(const double* x, int N, double* result) {
     }
 }
 
-/*__global__ void ZeroCounterKernel(const double* x, int N, unsigned* result, double tol) {   //calc 0 entries==> smaller than tol
-    int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    int laneId = threadIdx.x % warpSize;
-    unsigned numzeros = 0;
-
-    if ( std::abs(x[tid]) < tol ){ numzeros++; }
-
-    // Warp shuffle reduction
-    for (int i = warpSize / 2; i > 0; i /= 2) {
-        numzeros += __shfl_down_sync(0xFFFFFFFF, numzeros, i, warpSize);
-    }
-
-    // The first thread in each warp adds its partial sum to the global result
-    if (laneId == 0) {
-        atomicAdd(result, numzeros);
-    }
-}*/
 __global__ void ZeroCounterKernel(const double* x, int N, unsigned* result, double tol) {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
     int laneId = threadIdx.x % warpSize;

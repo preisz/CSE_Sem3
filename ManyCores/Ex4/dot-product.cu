@@ -1,5 +1,6 @@
 #include "timer.hpp"
 #include "cuda_errchk.hpp"
+#include <vector>
 #include <algorithm>
 #include <iostream>
 #include <stdio.h>
@@ -26,15 +27,14 @@ __global__ void cuda_dot_product(int N, double *x, double *y, double *result)
   if (threadIdx.x == 0) atomicAdd(result, shared_mem[0]);
 }
 
-
-
-/** Solve a system with `points_per_direction * points_per_direction` unknowns
- */
 int main() {
 
-  int N = 1000000;
-  
-  //
+  Timer timer;
+  std::vector<int> Nvals = { 100, 1'000, 10'000, 100'000, 1'000'000, 10'000'000, 50'000'000, 100'000'000, };
+  std::cout << "****Dot Product****\n";
+  std::cout << "Length of vector N, Execution time for operations" << std::endl;
+
+  for (int N : Nvals){
   // Allocate and initialize arrays on CPU
   //
   double *x = (double *)malloc(sizeof(double) * N);
@@ -44,10 +44,7 @@ int main() {
   std::fill(x, x + N, 1);
   std::fill(y, y + N, 2);
 
-
-  //
   // Allocate and initialize arrays on GPU
-  //
   double *cuda_x;
   double *cuda_y;
   double *cuda_alpha;
@@ -59,22 +56,29 @@ int main() {
   CUDA_ERRCHK(cudaMemcpy(cuda_x, x, sizeof(double) * N, cudaMemcpyHostToDevice));
   CUDA_ERRCHK(cudaMemcpy(cuda_y, y, sizeof(double) * N, cudaMemcpyHostToDevice));
   CUDA_ERRCHK(cudaMemcpy(cuda_alpha, &alpha, sizeof(double), cudaMemcpyHostToDevice));
-  
-  cuda_dot_product<<<512, 512>>>(N, cuda_x, cuda_y, cuda_alpha);
-  
+
+  // execute functions and measure time
+  //do it four times as I measure combined exec time of 4 functions
+  //for convenience do not re-initialize cuda_alpha oor use a nex one since this is just for benchmarking
+  CUDA_ERRCHK(cudaDeviceSynchronize()); 
+  timer.reset(); 
+    cuda_dot_product<<<512, 512>>>(N, cuda_x, cuda_y, cuda_alpha);
+    cuda_dot_product<<<512, 512>>>(N, cuda_x, cuda_y, cuda_alpha);
+    cuda_dot_product<<<512, 512>>>(N, cuda_x, cuda_y, cuda_alpha);
+    cuda_dot_product<<<512, 512>>>(N, cuda_x, cuda_y, cuda_alpha);
+  CUDA_ERRCHK(cudaDeviceSynchronize());  double elapsed = timer.get(); 
+
+  std:: cout << N << "," << elapsed << std::endl;
+
   CUDA_ERRCHK(cudaMemcpy(&alpha, cuda_alpha, sizeof(double), cudaMemcpyDeviceToHost));
 
-  std::cout << "Result of dot product: " << alpha << std::endl;
-
-  //
   // Clean up
-  //
   CUDA_ERRCHK(cudaFree(cuda_x));
   CUDA_ERRCHK(cudaFree(cuda_y));
   CUDA_ERRCHK(cudaFree(cuda_alpha));
   free(x);
   free(y);
-
+  }
   return EXIT_SUCCESS;
 }
 
