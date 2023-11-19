@@ -40,53 +40,69 @@ int main() {
   // Allocate and initialize arrays on CPU
 
   int K = 16; // K is a multiple of 8
-  int numBlocks = (N + BLOCKSIZE - 1) / BLOCK_SIZE;
-
-   for (int i = 0; i < K; i += BLOCKSIZE) { // Launch the kernel for K/8 iterations
-        cuda_dot_product<<<numBlocks, BLOCKSIZE>>>(x, y + k * vectorSize, dev_C + k, vectorSize);
-    }
 
   double *x = (double *)malloc(sizeof(double) * N);
-  //double *y = (double *)malloc(sizeof(double) * N);
-   double alpha = 0;
-
   std::fill(x, x + N, 1);
-  
-  std::fill(y, y + N, 1);
+
+  //double** y = new double*[K];// Allocate a single dynamic array for the rows
+        //for (int i = 0; i < K; ++i) { y[i] = new double[N];  } //y[k] is a vector of row N
+
+    // Create a vector of double arrays. Push arrays later
+    std::vector<double*> y;
+    for (int k = 0; k < K; ++k) {
+        double* yk = new double[N];
+        std::fill(yk, yk + N, k); //Init
+        y.push_back(yk);
+    }
+   std::vector<double> alpha(K, 0.0); //K results
+
 
   // Allocate and initialize arrays on GPU
   double *cuda_x;
   double *cuda_y;
   double *cuda_alpha;
-  
-  CUDA_ERRCHK(cudaMalloc(&cuda_x, sizeof(double) * N));
-  CUDA_ERRCHK(cudaMalloc(&cuda_y, sizeof(double) * N));
-  CUDA_ERRCHK(cudaMalloc(&cuda_alpha, sizeof(double)));
-  
-  CUDA_ERRCHK(cudaMemcpy(cuda_x, x, sizeof(double) * N, cudaMemcpyHostToDevice));
-  CUDA_ERRCHK(cudaMemcpy(cuda_y, y, sizeof(double) * N, cudaMemcpyHostToDevice));
-  CUDA_ERRCHK(cudaMemcpy(cuda_alpha, &alpha, sizeof(double), cudaMemcpyHostToDevice));
 
-  int numBlocks = (N + BLOCKSIZE - 1) / BLOCKSIZE;
+  CUDA_ERRCHK(cudaMalloc(&cuda_x, sizeof(double) * N));
+  CUDA_ERRCHK(cudaMalloc(&cuda_alpha, sizeof(double) * K ));
+  CUDA_ERRCHK(cudaMalloc(&cuda_y, N * K * sizeof(double)));
+
+   for (int k = 0; k < K; ++k) {
+        cudaMemcpy(&cuda_y[k * N], y[k], N * sizeof(double), cudaMemcpyHostToDevice);
+    }
+  CUDA_ERRCHK(cudaMemcpy(cuda_x, x, sizeof(double) * N, cudaMemcpyHostToDevice));
+  CUDA_ERRCHK(cudaMemcpy(cuda_alpha, &alpha, sizeof(double) * K, cudaMemcpyHostToDevice));
 
   // execute functions and measure time
   CUDA_ERRCHK(cudaDeviceSynchronize()); 
-  timer.reset(); 
-    cuda_dot_product<<<numBlocks, BLOCKSIZE>>>(N, cuda_x, cuda_y, cuda_alpha);
- CUDA_ERRCHK(cudaDeviceSynchronize());  double elapsed = timer.get(); 
+  int numBlocks = (N + BLOCKSIZE - 1) / BLOCKSIZE;
+  timer.reset(); int i =0;
+  
+    for (int k = 0; k < K; k += BLOCKSIZE) {  // Launch the kernel for K/8 iterations
+        cuda_dot_product<<<numBlocks, BLOCKSIZE>>>(N, cuda_x, cuda_y[k], cuda_alpha + k );
+    }
+     
+
+
+
+  /*int numBlocks = (N + BLOCKSIZE - 1) / BLOCKSIZE;
+        for (int k = 0; k < K; k += BLOCKSIZE) {  // Launch the kernel for K/8 iterations
+            cuda_dot_product<<<numBlocks, BLOCKSIZE>>>(N, cuda_x, cuda_y[k], cuda_alpha + k );
+        }*/
+   CUDA_ERRCHK(cudaDeviceSynchronize());  double elapsed = timer.get(); 
 
   std:: cout << N << "," << elapsed << std::endl;
 
-  CUDA_ERRCHK(cudaMemcpy(&alpha, cuda_alpha, sizeof(double), cudaMemcpyDeviceToHost));
-std:: cout << "Result: " << alpha << std::endl;
-
+  CUDA_ERRCHK(cudaMemcpy(&alpha, cuda_alpha, sizeof(double) * K, cudaMemcpyDeviceToHost));
+  std:: cout << "\nResults:\n " ;
+  for (const auto& res : alpha) {std::cout << res << ", ";}
 
   // Clean up
   CUDA_ERRCHK(cudaFree(cuda_x));
   CUDA_ERRCHK(cudaFree(cuda_y));
   CUDA_ERRCHK(cudaFree(cuda_alpha));
   free(x);
-  free(y);
+  for(size_t k=0, k<K, k++)
+    delete[] y[k];
   }
   return EXIT_SUCCESS;
 }
