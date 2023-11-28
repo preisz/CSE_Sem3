@@ -35,6 +35,7 @@
 *.pdf
 *.html
 .vscode/
+*.zip
 
 #Benchmarking
 **/benchmark/
