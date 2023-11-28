@@ -15,6 +15,11 @@ Vector& operator=(Vector&& other) {}
 
 };
 
+//Wrapper func: good, b.c you can be very generic
+void wrap(T arg){
+    func(arg);
+}
+
 
  
 
@@ -33,6 +38,18 @@ int main(){
     v2 = vec;
     v3 = std::move(vec);
     Vector v2 = Vector(10, 1.0); //probanly copied- ostum constructor
+
+    //#################
+    func(expr);
+    wrap(expr); //func should not realize
+    //ehther it is called inside wrap or not
+
+    //temporary: construct on spot
+    func(Widget());
+
+    //Not temporary
+    Widget expr;
+    func(expr);
 
     return EXIT_SUCCESS;
 
