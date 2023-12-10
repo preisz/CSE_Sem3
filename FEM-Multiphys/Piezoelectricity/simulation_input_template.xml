@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<cfsSimulation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cfs++.org/simulation https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd"
+ xmlns="http://www.cfs++.org/simulation">
+ 
+  
+ <documentation>
+   <title> Piezolectricity, Homework 2</title>
+   <authors>
+     <author> Petra Reisz </author>
+   </authors>
+   <date>2023-11-29</date>
+   <keywords>
+     <keyword>electrostatic-mechanic</keyword>
+   </keywords>
+   <references> no references </references>
+   <isVerified>no</isVerified>
+   <description>
+   Description of the simulation
+   </description>
+ </documentation>
+
+  <fileFormats>
+    <input >
+      <cdb fileName="geometry.cfs"/>
+    </input >
+    <output>
+      <hdf5/>
+      <text id='txt'/>
+    </output>
+    <materialData file="./mat_eff.xml" format="xml"/>
+  </fileFormats>
+
+  <domain geometryType="3d">
+    <regionList>
+      <region name="Plate_PMMA" material="PMMA"/>
+      <region name="Patch1" material="PIC 255"></region>
+    </regionList>
+  </domain> 
+  
+  <!-- Static Analysis in sequenceStep 1-->
+  <sequenceStep index="1">
+    <analysis>
+      <static/>
+    </analysis>
+
+    <pdeList>
+      <!-- Mechanic PDE -->
+      <mechanic subType="3d">
+        <regionList>
+          <region name="Plate_PMMA"/>
+        </regionList>
+        <bcsAndLoads>
+           
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for mechanic PDE-->
+        </storeResults>
+      </mechanic>
+
+      <electrostatic>
+        <regionList>
+          <region name="Example Region"/>
+        </regionList>
+        <bcsAndLoads>
+          <!-- Boundary conditions for electrostatic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for electrostatic PDE-->
+        </storeResults>
+      </electrostatic>
+    </pdeList>
+
+    <couplingList>
+      <direct>
+        <piezoDirect>
+          <regionList>
+            <!-- Regions for piezo coupling-->
+            <region name="Example Region"/>
+          </regionList>
+        </piezoDirect>
+      </direct>
+    </couplingList>
+  </sequenceStep>
+
+  <!-- Eigenvalue Analysis in sequenceStep 2 -->
+  <sequenceStep index="2">
+    <analysis>
+      <eigenFrequency>
+        <isQuadratic>no</isQuadratic>
+        <numModes> Number of Modes to compute </numModes>
+        <freqShift>0</freqShift>
+        <writeModes>yes</writeModes>
+      </eigenFrequency>
+    </analysis>
+
+    <pdeList>
+      <!-- Mechanic PDE -->
+      <mechanic subType="3d">
+        <regionList>
+          <region name="Example Region"/>
+        </regionList>
+        <bcsAndLoads>
+          <!-- Boundary conditions for mechanic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for mechanic PDE-->
+        </storeResults>
+      </mechanic>
+
+      <electrostatic>
+        <regionList>
+          <region name="Example Region"/>
+        </regionList>
+        <bcsAndLoads>
+          <!-- Boundary conditions for electrostatic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for electrostatic PDE-->
+        </storeResults>
+      </electrostatic>
+    </pdeList>
+
+    <couplingList>
+      <direct>
+        <piezoDirect>
+          <regionList>
+            <!-- Regions for piezo coupling-->
+            <region name="Example Region"/>
+          </regionList>
+        </piezoDirect>
+      </direct>
+    </couplingList>
+  </sequenceStep>
+
+  <!-- Harmonic Analysis in sequenceStep 3-->
+  <sequenceStep index="3">
+    <analysis>
+      <harmonic>
+        <numFreq> Number of Frequency Steps </numFreq>
+        <startFreq> Start at Frequency </startFreq>
+        <stopFreq> Stop at Frequency </stopFreq>
+      </harmonic>
+    </analysis>
+
+    <pdeList>
+      <!-- Mechanic PDE -->
+      <mechanic subType="3d">
+        <regionList>
+          <region name="Example Region"/>
+        </regionList>
+        <bcsAndLoads>
+          <!-- Boundary conditions for mechanic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for mechanic PDE-->
+        </storeResults>
+      </mechanic>
+
+      <electrostatic>
+        <regionList>
+          <region name="Example Region"/>
+        </regionList>
+        <bcsAndLoads>
+          <!-- Boundary conditions for electrostatic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for electrostatic PDE-->
+        </storeResults>
+      </electrostatic>
+    </pdeList>
+
+    <couplingList>
+      <direct>
+        <piezoDirect>
+          <regionList>
+            <!-- Regions for piezo coupling-->
+            <region name="Example Region"/>
+          </regionList>
+        </piezoDirect>
+      </direct>
+    </couplingList>
+  </sequenceStep>
+
+
+  <!-- Transient analysis in sequenceStep 4 -->
+  <sequenceStep index="4">
+
+    <analysis>
+      <transient>
+        <numSteps> Number of time steps </numSteps>
+        <deltaT> time step size </deltaT>
+      </transient>
+    </analysis>
+
+    <pdeList>
+      <mechanic subType="3d">
+        <regionList>
+          <region name="Example Region" dampingId="rayleigh_damping"/>
+        </regionList>
+
+        <dampingList>
+          <rayleigh id="rayleigh_damping"/>
+        </dampingList>
+
+        <!-- Use result from another sequenceStep as initial state of the transient simulation -->
+        <initialValues>
+          <initialState>
+            <sequenceStep index=""/>
+          </initialState>
+        </initialValues>
+
+        <bcsAndLoads>
+          <!-- Boundary conditions for mechanic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for mechanic PDE-->
+        </storeResults>
+      </mechanic>
+
+      <electrostatic>
+        <regionList>
+          <region name="Example Region"/>
+        </regionList>
+        <bcsAndLoads>
+          <!-- Boundary conditions for electrostatic PDE -->
+        </bcsAndLoads>
+        <storeResults>
+          <!-- Results for electrostatic PDE-->
+        </storeResults>
+      </electrostatic>
+    </pdeList>
+
+    <couplingList>
+      <direct>
+        <piezoDirect>
+          <regionList>
+            <!-- Regions for piezo coupling-->
+            <region name="Example Region"/>
+          </regionList>
+        </piezoDirect>
+      </direct>
+    </couplingList>
+  </sequenceStep>
+
+</cfsSimulation>

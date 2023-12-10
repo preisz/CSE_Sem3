@@ -1,0 +1,82 @@
+reset
+brick x 450 y 750 z 8 #create plate
+
+nodeset 1 add surface 3 #create the fixed surface regions ->nodesets
+nodeset 1 name "Gamma_s1"
+nodeset 2 add surface 4 #create the fixed surface regions ->nodesets
+nodeset 2 name "Gamma_s2"
+nodeset 3 add surface 5 #create the fixed surface regions ->nodesets
+nodeset 3 name "Gamma_s3"
+nodeset 4 add surface 6 #create the fixed surface regions ->nodesets
+nodeset 4 name "Gamma_s4"
+
+nodeset 5 add surface 1 #create the upper surface region with the electrode
+nodeset 5 name "Gamma_up"
+nodeset 6 add surface 2 #create the down surface region with the electrode
+nodeset 6 name "Gamma_down"
+
+###### Firsrt patch ######
+brick x 35 y 61 z 0.4 #create patch 1
+move Surface 8 location surface 1 include_merged #move patch 1 on the upper surface of the plate
+move Surface 8 y -250  include_merged #move the path by -l/3*l down in y-direction
+
+### Second path #####
+brick x 35 y 61 z 0.4
+move Surface 14 location surface 1 include_merged #move patch 2 on the upper surface of the plate
+
+
+### Third patch #######
+brick x 35 y 61 z 0.4
+move Surface 20 location surface 1 include_merged #move patch 3 on the upper surface of the plate
+move Surface 20 y 250  include_merged #move the path by l/3*l up in y-direction
+move Surface 20 x -112.5  include_merged #move the patch by -w/4 down in x-direction
+
+### Merge volumes and do meshing
+merge volume all
+
+#### Do meshing on the edges
+curve 17, 18, 19, 20 interval 5
+17, 18, 19, 20  scheme equal
+mesh curve 17, 18, 19, 20 
+
+curve 29, 30, 31, 32  interval 5
+29, 30, 31, 32  scheme equal
+mesh curve 29, 30, 31, 32 
+
+curve 41,42,43,44
+41,42,43,44 sheme eqqual
+mesh curve 41,42,43,44
+
+#### Now mesh the volumes
+volume 1 size 4 #this is 2 elements in thickness direction
+mesh volume 1
+block 1 add volume 1 #create the block
+block 1 element type hex20 #define second order HEX elements
+block 1 name "Plate_PMMA" #assign name to plate
+
+volume 2 size 0.2 #this is 2 elements in thickness direction
+mesh volume 2
+block 2 add volume 2 #create the block
+block 2 element type hex20 #define second order HEX elements
+block 2 name "Patch1" #assign name to patch 1
+
+volume 3 size 0.2 #this is 2 elements in thickness direction
+mesh volume 3
+block 3 add volume 3 #create the block
+block 3 element type hex20 #define second order HEX elements
+block 3 name "Patch2" #assign name to patch 2
+
+volume 4 size 0.2 #this is 2 elements in thickness direction
+mesh volume 4
+block 4 add volume 4 #create the block
+block 4 element type hex20 #define second order HEX elements
+block 4 name "Patch3" #assign name to patch 3
+
+
+### Export
+export ansys cdb "/home/petrar/PetraMaster/WS23/FEM-MultiPhys/HW2/geomHW2.cdb"  geometry overwrite 
+
+
+
+
+

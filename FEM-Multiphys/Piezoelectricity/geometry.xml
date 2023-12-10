@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<cfsSimulation xmlns="http://www.cfs++.org/simulation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cfs++.org/simulation http://cfs-doc.mdmt.tuwien.ac.at/xml/CFS-Simulation/CFS.xsd">
+
+  <!--***************************    INPUTs and OUTPUTs    ***********************-->
+  <fileFormats> 
+    <input>
+       <cdb fileName="geomHW2.cdb" />
+    </input>
+    
+    <output>
+      <hdf5 id="hdf5" directory="."/>
+    </output>
+    
+    <materialData file="mat_eff.xml" format="xml"/>
+  </fileFormats>
+  
+  <!--***************************  REGIONSs, SURFACEs and NODEs  ***********************-->
+    <!--domain geometryType="plane"-->
+    <domain geometryType="3d"/>
+
+</cfsSimulation>

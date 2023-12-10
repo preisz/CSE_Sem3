@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<cfsInfo status="finished" infoWriteCounter="2" infoRejectCounter="0">
+  <summary>
+    <timer wall-clock="17.09s" wall="17.087" cpu="17.0029" calls="1"/>
+    <!-- memory in MB-->
+    <memory final="331.18" peak="344.35"/>
+  </summary>
+  <header id="">
+    <environment started="2023-Dec-07 22:16:09" host="petrar-SwiftWorkHorse"/>
+    <progOpts problem="geometry" parameterFile="/home/petrar/PetraMaster/WS23/FEM-MultiPhys/HW2/geometry.xml" schemaPath="/home/petrar/PetraMaster/WS23/FEM-MultiPhys/CFS-2023W-Linux/share/xml" meshFile="" logConfFile="" detailed="no">
+      <cfs version="23.05" name="Heavy Headache" build="Release" git_commit="9f79019e0f616e46a4ae297229478d0486b03618" git_branch="(no branch)" compiled="Oct  6 2023" exe="cfs"/>
+      <openmp CFS_NUM_THREADS="1" MKL_NUM_THREADS="1" OMP_NUM_THREADS="1"/>
+    </progOpts>
+    <domain nx="113" ny="188" nz="2">
+      <grids>
+        <timer wall-clock="16.28s" wall="16.28" cpu="16.2" calls="1"/>
+        <grid gridId="default" dimensions="3" elements="86310" nodes="237051"/>
+      </grids>
+      <coordinateSystems>
+        <system name="default"/>
+      </coordinateSystems>
+      <regions>
+        <region name="Plate_PMMA" id="0" type="volume" regular="yes" hom="yes" nodes="236097" elems="42488" isQuadratic="yes"/>
+        <region name="Patch1" id="1" type="volume" regular="yes" hom="yes" nodes="360" elems="50" isQuadratic="yes"/>
+        <region name="Patch2" id="2" type="volume" regular="yes" hom="yes" nodes="360" elems="50" isQuadratic="yes"/>
+        <region name="Patch3" id="3" type="volume" regular="yes" hom="yes" nodes="234" elems="30" isQuadratic="yes"/>
+        <region name="Gamma_down" id="4" type="surface" regular="yes" hom="yes" nodes="64335" elems="21244" isQuadratic="yes"/>
+        <region name="Gamma_s1" id="5" type="surface" regular="yes" hom="yes" nodes="909" elems="226" isQuadratic="yes"/>
+        <region name="Gamma_s2" id="6" type="surface" regular="yes" hom="yes" nodes="1509" elems="376" isQuadratic="yes"/>
+        <region name="Gamma_s3" id="7" type="surface" regular="yes" hom="yes" nodes="909" elems="226" isQuadratic="yes"/>
+        <region name="Gamma_s4" id="8" type="surface" regular="yes" hom="yes" nodes="1509" elems="376" isQuadratic="yes"/>
+        <region name="Gamma_up" id="9" type="surface" regular="yes" hom="yes" nodes="64335" elems="21244" isQuadratic="yes"/>
+      </regions>
+      <namedNodes/>
+      <namedElements/>
+      <globalMathParser nx="113" ny="188" nz="2"/>
+    </domain>
+  </header>
+</cfsInfo>
