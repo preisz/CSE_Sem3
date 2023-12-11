@@ -77,4 +77,26 @@ $d^{simp}_{33}= 400\cdot 10^{-12}\frac{C}{N} \cdot k = 785.77 \cdot 10^{-12}\fra
 
 
  and
-$d^{simp}_{15}= 550\cdot 10^{-12}\frac{C}{N} = 1080.44\cdot 10^{-12}\frac{C}{N}$ .
+$d^{simp}_{15}= 550\cdot 10^{-12}\frac{C}{N} = 1080.44\cdot 10^{-12}\frac{C}{N}$.
+
+_Calculate the material coefficients $S^{simp}_{11}$ and $S^{simp}_{12}$ and the effective youngs modulus $E^{simp}_{L}$ in the plane normal to thickness direction. Apply the change in young's modulus to other material coefficients. (Hint: Use the d-form and the blocking force)._ (**1 point**)
+_
+he blocking force is the force needed to completely consttrain the material, leading to zero strain (displacement). Assuming only principal stresses normal to plane $\sigma_3 = \frac{F_B}{A}$ arise
+
+$$ s_i = 0 = S^E_{ij} \sigma_j + d_{ij}E_j, i=2
+
+\Longrightarrow s_2 = 0 = S^E_{23} \frac{F_B}{A} + d_{23}E_3 $$
+
+Only $E_3$ is nonzero and $S_{12}=S_{21}$ and for transfersally isotropic material $d_{23} = d_{31}$ and $d_{21}=d_{22} =0$, see lecture slides "Piezoelectricity", slide 13.
+
+$$ \Longrightarrow S^{sim}_{12} \frac{F_B}{A} = - d^{sim}_{31}E_3 $$
+
+$$ \Longrightarrow S^{sim}_{12} = -\frac{A}{F_B} d^{sim}_{31}E_3  = \frac{65 \times 31 mm²}{256N} \cdot  3.536 \times 10^{-10}\frac{C}{N} \cdot 1250 \frac{V}{mm} = 3.479 \times 10^{-6} mm \cdot C \cdot V / N²$$
+
+If one "simplifies" the dimensions with $1V = 1 N\cdot m /C$:
+
+$$ S^{sim}_{12} =  3.479 \times 10^{-6} \times 10^{-3} \frac{mm}{N} = 3.479 \times 10^{-9} \frac{mm}{N} = 3.479 \times 10^{-12} \frac{m}{N}$$
+
+Analogously 
+
+s_1 = 0 = S^E_{1j} \frac{F_B}{A} + d_{1j}E_j = \frac{F_B}{A} $$
