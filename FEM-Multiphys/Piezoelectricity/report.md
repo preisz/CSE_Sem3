@@ -48,17 +48,30 @@ Calculate the significant effective material properties $d^{simp}_{31}$, $S^{sim
  
 * Find $d^{simp}_{31}$ using the nominal displacement and the applied electric field $E_{3}$. Apply the change to $d^{simp}_{33}$ and $d^{simp}_{15}$ (Hint: Use the d-form of the constitutive relation). (**1 point**)
 
+Let's consider the constitutive equation, in index notation, where we take the vectorial form of stress $\sigma_i$ and strain $s_i$:
+
+$$ s_i = S^E_{ij}\sigma_j + d^T_ij E_j  $$
+where $d$ transversally isotropic (1-2 is the isotropy plane, this is now our case since the polarization direction is the (3)-direction) is given as (see lecture slides to piezoelectricity, page 13):
+
+$$ d^T = =\begin{bmatrix}
+ 0 & 0 & d_{31} \\
+ 0 & 0 & d_{31} \\
+ 0 & 0 & d_{33} \\
+ 0 & d_{15} & 0 \\
+ d_{15}& 0 & 0 \\
+0 & 0 & 0 
+\end{bmatrix}$$
 We can calculate as following:
 - stress free nominal displacement $\Delta L_0 = -27 \mu m$ in the length direction. 
 - So, the stress $\sigma = 0$ (since stress-free configuration)
 - Let's take the d-form of the constitutive equation:
-$$ s_1 = S^E_{1j}\sigma_j + d_{1j} E_j   $$
-Here we took the vector notation of stresses and strains, where $s = (s_1, s_2, s_3, s_4, s_5, s_6 ) = (s_{11}, s_{22}, s_{33},s_{23},s_{13},s_{12}) $.
-- We know that $s_1 = \Delta L_0 /l, \, \, \sigma_j =0 \forall j, \, \, E_1=E_2=0$ and $E_3=0$. Thereby, we can write:
+$$ s_2 = S^E_{2j}\sigma_j + d_{2j} E_j   $$
+Here we took the vector notation of stresses and strains, where $s = (s_1, s_2, s_3, s_4, s_5, s_6 ) = (s_{11}, s_{22}, s_{33},\gamma_{23},\gamma_{13},\gamma_{12}) $.
+- We know that $s_2 = \Delta L_0 /l, \, \, \sigma_j =0 \forall j, \, \, E_1=E_2=0$ and $E_3=0$. Thereby, we can write:
 
-$$ s_1 = \frac{\Delta L_0}{l_p} = d_{13}E_3 = d_{13} \cdot \frac{V}{t_p}$$
+$$ s_2 = \frac{\Delta L_0}{l_p} = d_{23}E_3 = d_{13} \cdot \frac{V}{t_p}$$
 
-using symmetry $d_{31} = d_{13}$, 
+and for the entries $d$ it holds symmetry $d_{23} = d_{31}$, see above. 
 
 $$ d^{simp}_{31}  = \frac{\Delta L_0/l_p}{V/t_p} = \frac{4.42\times10^{-4}}{1250 V/mm} = 3.536 \times 10^{-7}\frac{mm}{V} = 3.536 \times 10^{-7}\cdot \frac{ C }{ N\cdot m} \cdot 10^{-10} m$$
 
@@ -77,26 +90,33 @@ $d^{simp}_{33}= 400\cdot 10^{-12}\frac{C}{N} \cdot k = 785.77 \cdot 10^{-12}\fra
 
 
  and
-$d^{simp}_{15}= 550\cdot 10^{-12}\frac{C}{N} = 1080.44\cdot 10^{-12}\frac{C}{N}$.
+$d^{simp}_{15}= 550\cdot 10^{-12}\frac{C}{N} = 1080.44\cdot 10^{-12}\frac{C}{N}$.<br><br>
 
 _Calculate the material coefficients $S^{simp}_{11}$ and $S^{simp}_{12}$ and the effective youngs modulus $E^{simp}_{L}$ in the plane normal to thickness direction. Apply the change in young's modulus to other material coefficients. (Hint: Use the d-form and the blocking force)._ (**1 point**)
 _
-he blocking force is the force needed to completely consttrain the material, leading to zero strain (displacement). Assuming only principal stresses normal to plane $\sigma_3 = \frac{F_B}{A}$ arise
+The blocking force is the force needed to completely constrain the material, leading to zero strain (displacement). We are given the blocking force in the (2)-direction (length direction).$\Longrightarrow s_2 = 0, \, \sigma_2 = \frac{F_B}{A_2} = \frac{256N}{35 \times 0.4 mm^2}$
 
-$$ s_i = 0 = S^E_{ij} \sigma_j + d_{ij}E_j, i=2
+$$ s_2 = 0 = S^E_{2j} \sigma_j + d_{2j}E_j = S^E_{22} \sigma_2 + d_{23}E_3$$
 
-\Longrightarrow s_2 = 0 = S^E_{23} \frac{F_B}{A} + d_{23}E_3 $$
+when assuming that the plate in the width (1) direction expands to a stress free configuration, so that $\sigma_j \neq 0 $ only for $j = 2$. Looking at $S^E$ we see that $S^E_{22}=S^E_{11}$ and $d_{23} = d_{31}$ . $E_3$ is calculated above ($1250 V/mm$)
 
-Only $E_3$ is nonzero and $S_{12}=S_{21}$ and for transfersally isotropic material $d_{23} = d_{31}$ and $d_{21}=d_{22} =0$, see lecture slides "Piezoelectricity", slide 13.
+$$
+s_2 = 0 = S^E_{11} \frac{F_B}{A_2} + d_{31}E_3 \\
+\Longrightarrow  S^{sim}_{11} = -\frac{A_2}{F_B} d^{sim}_{31}E_3
+= \frac{35 \times 0.4 mm²}{256N} \cdot  3.536 \times 10^{-10}\frac{C}{N} \cdot 1250 \frac{V}{mm}
+= 2.417 \times 10^{-8} mm \cdot C \cdot V / N²
+ $$
 
-$$ \Longrightarrow S^{sim}_{12} \frac{F_B}{A} = - d^{sim}_{31}E_3 $$
+ Converting the units in $mm^2/N$:
+ $$
+  S^{sim}_{11}  = 2.417 \times 10^{-8} \cdot \frac{10^{3}mm^2}{N} = 2.417 \times 10^{-5} \frac{mm^2}{N} = 2.417 \times 10^{-11} \frac{m^2}{N}
+ $$
 
-$$ \Longrightarrow S^{sim}_{12} = -\frac{A}{F_B} d^{sim}_{31}E_3  = \frac{65 \times 31 mm²}{256N} \cdot  3.536 \times 10^{-10}\frac{C}{N} \cdot 1250 \frac{V}{mm} = 3.479 \times 10^{-6} mm \cdot C \cdot V / N²$$
+In the next step, we calculate $S^{sim}_12$
+$$ 
+s_1 = S_{1j}\sigma_j + d_{1j}Ej = S_{12}\sigma_2 + d_{13}E_3 \\
+.\\
+\Longrightarrow S^{sim}_{12} = \frac{(s_2 - d{13}E_3)}{\sigma_2} = (s_2 - d{13}E_3) \cdot \frac{A_2}{F_B}
+$$
 
-If one "simplifies" the dimensions with $1V = 1 N\cdot m /C$:
 
-$$ S^{sim}_{12} =  3.479 \times 10^{-6} \times 10^{-3} \frac{mm}{N} = 3.479 \times 10^{-9} \frac{mm}{N} = 3.479 \times 10^{-12} \frac{m}{N}$$
-
-Analogously 
-
-s_1 = 0 = S^E_{1j} \frac{F_B}{A} + d_{1j}E_j = \frac{F_B}{A} $$
