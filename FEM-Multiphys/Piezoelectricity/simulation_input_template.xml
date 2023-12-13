@@ -33,8 +33,18 @@
 
   <domain geometryType="3d">
     <regionList>
-      <region name="Plate_PMMA" material="PMMA"/>
-      <region name="Patch1" material="PIC 255"></region>
+      <region name="Plate_PMMA" material="PMMA">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+      <region name="Patch1" material="PIC 255">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+      <region name="Patch2" material="PIC 255">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+      <region name="Patch3" material="PIC 255">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
     </regionList>
   </domain> 
   
@@ -45,50 +55,81 @@
     </analysis>
 
     <pdeList>
-      <!-- Mechanic PDE -->
+      <!-- Mechanic PDE: on the plate. -->
       <mechanic subType="3d">
         <regionList>
           <region name="Plate_PMMA"/>
         </regionList>
+
         <bcsAndLoads>
-           
+          <fix>
+            <regionList> <!-- Fixed surface BCs-->
+              <region name="Gamma_s1" />
+              <region name="Gamma_s2" />
+              <region name="Gamma_s3" />
+              <region name="Gamma_s1" />
+            </regionList>
+          </fix>
+
+          <pressure
+              name="Gamma_down" value="1000"> <!-- Uniform pressure on bottom of plate-->
+          </pressure>
         </bcsAndLoads>
+
         <storeResults>
-          <!-- Results for mechanic PDE-->
+          <nodeResult type="mechDisplacement"></nodeResult>
+          <elemResult type="mechStress"></elemResult>
         </storeResults>
       </mechanic>
 
+      <!--  #################Electrostatic, pathes-->
       <electrostatic>
         <regionList>
-          <region name="Example Region"/>
+          <region name="Patch1"/>
+          <region name="Patch2" />
+          <region name="Patch3" />
         </regionList>
         <bcsAndLoads>
-          <!-- Boundary conditions for electrostatic PDE -->
+          <ground name="Patch3_Down">
+          <ground name="Patch1_Down">
+          <ground name="Patch2_Down">
+
+          <potential name="Patch3_Down" value="500"/> <!-- 500 V potential applied on the top-->
+          <potential name="Patch2_Down" value="500"/>
+          <potential name="Patch1_Down" value="500"/>
         </bcsAndLoads>
         <storeResults>
-          <!-- Results for electrostatic PDE-->
+          <nodeResult type="elecPotential">
+            <allRegions/>
+          </nodeResult>
+          <elemResult type="elecFieldIntensity">
+            <allRegions/>
+          </elemResult>
         </storeResults>
       </electrostatic>
     </pdeList>
 
+    <!-- Piezo Couplling##########################-->
     <couplingList>
       <direct>
         <piezoDirect>
           <regionList>
-            <!-- Regions for piezo coupling-->
-            <region name="Example Region"/>
+            <!-- Regions for piezo coupling: patches-->
+            <region name="Patch1"/>
+            <region name="Patch2" />
+            <region name="Patch3" />  
           </regionList>
         </piezoDirect>
       </direct>
     </couplingList>
   </sequenceStep>
 
-  <!-- Eigenvalue Analysis in sequenceStep 2 -->
+<!-- #####################Eigenvalue Analysis in sequenceStep 2 -->
   <sequenceStep index="2">
     <analysis>
       <eigenFrequency>
         <isQuadratic>no</isQuadratic>
-        <numModes> Number of Modes to compute </numModes>
+        <numModes> 10 </numModes>
         <freqShift>0</freqShift>
         <writeModes>yes</writeModes>
       </eigenFrequency>
@@ -98,13 +139,21 @@
       <!-- Mechanic PDE -->
       <mechanic subType="3d">
         <regionList>
-          <region name="Example Region"/>
+          <region name="PMMA_Plate"/>
         </regionList>
         <bcsAndLoads>
           <!-- Boundary conditions for mechanic PDE -->
+          <fix> <!-- Same as in the static analysis-->
+            <regionList> <!-- Fixed surface BCs-->
+              <region name="Gamma_s1" />
+              <region name="Gamma_s2" />
+              <region name="Gamma_s3" />
+              <region name="Gamma_s1" />
+            </regionList>
+          </fix>
         </bcsAndLoads>
         <storeResults>
-          <!-- Results for mechanic PDE-->
+          <elemResult type="mechStrain"></elemResult>
         </storeResults>
       </mechanic>
 
