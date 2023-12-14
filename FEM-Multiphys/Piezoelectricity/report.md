@@ -1,3 +1,7 @@
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });</script>
+
+
 ## 1. Create a suitable mesh for the problem
 
 * Create hexahedral mesh (2 elements per layer in thickness direction should be sufficient). **(1 Point)**.
@@ -22,7 +26,7 @@ What are the modelling assumptions in the conducted simulation? Consider PDEs, b
 - We can apply Galerkin procedure and thaat leads to a coupled system of ordinary differential equations.
   
 
-### 3. Material data
+## 3. Material data
 
 The material data of the piezoceramic PIC 255 are given below,
 
@@ -73,10 +77,10 @@ $$ s_2 = \frac{\Delta L_0}{l_p} = d_{23}E_3 = d_{13} \cdot \frac{V}{t_p}$$
 
 and for the entries $d$ it holds symmetry $d_{23} = d_{31}$, see above. 
 
-$$ d^{simp}_{31}  = \frac{\Delta L_0/l_p}{V/t_p} = \frac{4.42\times10^{-4}}{1250 V/mm} = 3.536 \times 10^{-7}\frac{mm}{V} = 3.536 \times 10^{-7}\cdot \frac{ C }{ N\cdot m} \cdot 10^{-10} m$$
+$$ d^{simp}_{31}  = \frac{\Delta L_0/l_p}{V/t_p} = -\frac{4.42\times10^{-4}}{1250 V/mm} = -3.536 \times 10^{-7}\frac{mm}{V} = -3.536 \times 10^{-7}\cdot \frac{ C }{ N\cdot m} \cdot 10^{-10} m$$
 
 Using that one Volt is $1V = 1J/C$. It yields
-$$ d^{simp}_{31} = 3.536 \times 10^{-10}\cdot \frac{ C }{ N}$$
+$$ d^{simp}_{31} = -3.536 \times 10^{-10}\cdot \frac{ C }{ N}$$
 
 This is a change of factor:
 
@@ -112,11 +116,40 @@ s_2 = 0 = S^E_{11} \frac{F_B}{A_2} + d_{31}E_3 \\
   S^{sim}_{11}  = 2.417 \times 10^{-8} \cdot \frac{10^{3}mm^2}{N} = 2.417 \times 10^{-5} \frac{mm^2}{N} = 2.417 \times 10^{-11} \frac{m^2}{N}
  $$
 
-In the next step, we calculate $S^{sim}_12$
-$$ 
+In the next step, we calculate $S^{sim}_{12}$, with $s_1 = -650 \times 10³ \mu m/mm$:
+$$
 s_1 = S_{1j}\sigma_j + d_{1j}Ej = S_{12}\sigma_2 + d_{13}E_3 \\
 .\\
-\Longrightarrow S^{sim}_{12} = \frac{(s_2 - d{13}E_3)}{\sigma_2} = (s_2 - d{13}E_3) \cdot \frac{A_2}{F_B}
+\Longrightarrow S^{sim}_{12} = \frac{(s_1 - d_{13}E_3)}{\sigma_2} = (s_1 - d_{13}E_3) \cdot \frac{A_2}{F_B} = -1.1375 \times 10^{-11} \frac{m²}{N}
 $$
+Using the the relations between elasticity and compilance tensor for transfersally isotropic materials (see [Wikipedia](https://en.wikipedia.org/wiki/Transverse_isotropy)):
+![Alt text](compilance_vsEmodulus.png)
 
+With this relation, the effective E-modulus is given as
 
+$$  E^{sim} = \frac{1}{S^{sim}_{11}}  = 41.37\times 10⁹ \frac{N}{m²}= 41.37 GPa$$
+
+This is a change of  $ k_2 = \frac{E^{sim}}{E} = \frac{E^{sim}}{S^{-1}_{11}} =  0.666$
+Applying it to other coefficients (the Poisson's ratios are from [here](https://www.researchgate.net/figure/Material-parameters-of-PIC-255_tbl2_259230226)):
+
+$$  
+\rho^{sim} = \rho \cdot k_2 = 5195.294 kg/m³ \\
+\nu^{sim}_{12} = \nu \cdot k_2 = 0.2398 \\
+\nu^{sim}_{23} = \nu^{sim}_{13} = 0.3064
+$$
+<br><br>
+
+_The capacitance of the piezoelectric patch is 90nF . Calculate the relative permittivity $\epsilon_{33}$ and apply the change to $\epsilon_{11}$ ._
+
+To determine the capacitance of the capacitor, use the capacitance formula,
+where $C = 90nF$ is the capacitance of the capacitor, $A=l_pw_p$ is the area of the plates of the capacitor, $d=t_p$ is the spacing between the plates, and is the permittivity of the material separating the plates:
+
+$$  C = \frac{\epsilon A}{d} \Longrightarrow \epsilon^{sim}_{33} = \frac{Cd}{A}= \frac{90nF \cdot 0.4mm}{35\times 61 mm²} = 1.686 \times 10^{-8} F/m = 1.686 \times 10^{-8} \frac{As}{Vm} $$
+
+This is a relative change of
+
+$$ k_3 = \frac{\epsilon^{sim}_{33}}{\epsilon_{33}} = \frac{1.686 \times 10^{-8}}{1.5494\times 10^{-8}} = 1.08828 $$
+
+So the effective relative permittivity:
+
+$$ \epsilon_{11}^{sim} = \epsilon_{11} \cdot k_3 = 1.53110 \times 10^{-8}  \frac{As}{Vm}$$
