@@ -19,10 +19,18 @@ nodeset 6 name "Gamma_down"
 brick x 35 y 61 z 0.4 #create patch 1
 move Surface 8 location surface 1 include_merged #move patch 1 on the upper surface of the plate
 move Surface 8 y -250  include_merged #move the path by -l/3*l down in y-direction
+nodeset 7 add surface 7 #create the fixed surface regions ->nodesets
+nodeset 7 name "Patch1_Sup" #upper surface, patch1
+nodeset 8 add surface 8 #create the fixed surface regions ->nodesets
+nodeset 8 name "Patch1_Sdown" #down surface, patch1
 
 ### Second path #####
 brick x 35 y 61 z 0.4
 move Surface 14 location surface 1 include_merged #move patch 2 on the upper surface of the plate
+nodeset 9 add surface 13 #create the fixed surface regions ->nodesets
+nodeset 9 name "Patch2_Sup" #upper surface, patch1
+nodeset 10 add surface 14 #create the fixed surface regions ->nodesets
+nodeset 10 name "Patch2_Sdown" #down surface, patch1
 
 
 ### Third patch #######
@@ -30,6 +38,10 @@ brick x 35 y 61 z 0.4
 move Surface 20 location surface 1 include_merged #move patch 3 on the upper surface of the plate
 move Surface 20 y 250  include_merged #move the path by l/3*l up in y-direction
 move Surface 20 x -112.5  include_merged #move the patch by -w/4 down in x-direction
+nodeset 11 add surface 19 #create the fixed surface regions ->nodesets
+nodeset 11 name "Patch3_Sup" #upper surface, patch1
+nodeset 12 add surface 20 #create the fixed surface regions ->nodesets
+nodeset 12 name "Patch3_Sdown" #down surface, patch1
 
 ### Merge volumes and do meshing
 merge volume all
@@ -49,6 +61,7 @@ mesh curve 41,42,43,44
 
 #### Now mesh the volumes
 volume 1 size 4 #this is 2 elements in thickness direction
+#volume 1  sizing function exodus min_size 4 max_size 20 #to have less elements
 mesh volume 1
 block 1 add volume 1 #create the block
 block 1 element type hex20 #define second order HEX elements
@@ -72,9 +85,16 @@ block 4 add volume 4 #create the block
 block 4 element type hex20 #define second order HEX elements
 block 4 name "Patch3" #assign name to patch 3
 
+##Scale up to meter ##
+volume all scale 1e-3
+block all scale 1e-3
 
 ### Export
-export ansys cdb "/home/petrar/PetraMaster/WS23/FEM-MultiPhys/HW2/geomHW2.cdb"  geometry overwrite 
+export ansys cdb "geomHW2.cdb"  geometry overwrite 
+#export ansys cdb "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Piezoelectricity/geomHW2.cdb" #geometry overwrite 
+
+
+
 
 
 

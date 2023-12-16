@@ -135,7 +135,10 @@ Applying it to other coefficients (the Poisson's ratios are from [here](https://
 $$  
 \rho^{sim} = \rho \cdot k_2 = 5195.294 kg/m³ \\
 \nu^{sim}_{12} = \nu \cdot k_2 = 0.2398 \\
-\nu^{sim}_{23} = \nu^{sim}_{13} = 0.3064
+\nu^{sim}_{23} = \nu^{sim}_{13} = 0.3064 \\
+S^{sim}_{44}= S_{44} \cdot k_2 = 2.797 \times 10^{-11} \\
+S^{sim}_{33} = S_{33} \cdot k_2 = 1.3787 \times 10^{-11} \\
+S^{sim}_{13} = S_{13} \cdot k_2 = -5.661 \times 10^{-12}
 $$
 <br><br>
 
