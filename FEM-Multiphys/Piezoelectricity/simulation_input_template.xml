@@ -46,9 +46,35 @@
         <matRotation alpha="0.0" beta="0" gamma="0"/>
       </region>
     </regionList>
-    <nodeList> <!-- CFS can pick nodes from the mesh, e.g. to write text output for this point -->
+    <surfRegionList>
+      <surfRegion name="Patch1_Sup" />
+      <surfRegion name="Patch2_Sup" />
+      <surfRegion name="Patch3_Sup" />
+      <surfRegion name="Patch1_Sdown" />
+      <surfRegion name="Patch2_Sdown" />
+      <surfRegion name="Patch3_Sdown" />
+    </surfRegionList>
+  <nodeList> <!-- CFS can pick nodes from the mesh, e.g. to write text output for this point -->
       <nodes name="P_middle">
           <coord x="0.0" y="0" z="0"/> <!-- this should be the middle of plate, CFS will search for the closest node -->
+       </nodes>
+      <nodes name="Patch1_SupNodes">
+          <allNodesInRegion regName="Patch1_Sup" />
+       </nodes>
+       <nodes name="Patch2_SupNodes">
+          <allNodesInRegion regName="Patch2_Sup" />
+       </nodes>
+       <nodes name="Patch3_SupNodes">
+          <allNodesInRegion regName="Patch3_Sup" />
+       </nodes>
+       <nodes name="Patch1_SdownNodes">
+          <allNodesInRegion regName="Patch1_Sdown" />
+       </nodes>
+      <nodes name="Patch2_SdownNodes">
+        <allNodesInRegion regName="Patch2_Sdown" />
+      </nodes>
+      <nodes name="Patch3_SdownNodes">
+        <allNodesInRegion regName="Patch3_Sdown" />
       </nodes>
   </nodeList>
   </domain> 
@@ -94,11 +120,9 @@
           </pressure>
         </bcsAndLoads>
 
-        <storeResults>
+         <storeResults>
           <nodeResult type="mechDisplacement">
-            <regionList>
-              <region name="Plate_PMMA" />
-            </regionList>
+            <allRegions />
           </nodeResult>
         </storeResults>
       </mechanic>
@@ -111,21 +135,18 @@
           <region name="Patch3" />
         </regionList>
         <bcsAndLoads>
-          <constraint name="Patch3_Sdown"></constraint>
-          <constraint name="Patch1_Sdown"></constraint>
-          <constraint name="Patch2_Sdown"></constraint>
+          <constraint name="Patch1_Sup" quantity="elecPotential"/>
+          <constraint name="Patch2_Sup" quantity="elecPotential"/>
+          <constraint name="Patch3_Sup" quantity="elecPotential"/>
 
-          <potential name="Patch1_Sup" value="500"/> <!-- 500 V potential applied on the top-->
-          <potential name="Patch2_Sup" value="500"/>
-          <potential name="Patch3_Sup" value="500"/>
+          <ground name="Patch1_Sdown"/> <!-- Ground:bottom -->
+          <ground name="Patch2_Sdown" />
+          <ground name="Patch3_Sdown"/>
         </bcsAndLoads>
         <storeResults>
           <nodeResult type="elecPotential">
             <allRegions/>
           </nodeResult>
-          <elemResult type="elecFieldIntensity">
-            <allRegions/>
-          </elemResult>
         </storeResults>
       </electrostatic>
     </pdeList>
@@ -140,6 +161,8 @@
             <region name="Patch2" />
             <region name="Patch3" />  
           </regionList>
+          <storeResults>
+          </storeResults>
         </piezoDirect>
       </direct>
     </couplingList>
@@ -204,13 +227,13 @@
           <region name="Patch3" />
         </regionList>
         <bcsAndLoads>
-          <constraint name="Patch1_Sdown" /> <!-- Same Potential all over the electrodes-->
-          <constraint name="Patch2_Sdown" />
-          <constraint name="Patch3_Sdown" />
+          <ground name="Patch1_Sdown" /> 
+          <ground name="Patch2_Sdown" />
+          <ground name="Patch3_Sdown" />
   
-          <constraint name="Patch1_Sup" /> 
-          <constraint name="Patch2_Sup" />
-          <constraint name="Patch3_Sup" />
+          <constraint name="Patch1_Sup" quantity="elecPotential"/>
+          <constraint name="Patch2_Sup" quantity="elecPotential"/>
+          <constraint name="Patch3_Sup" quantity="elecPotential"/>
         </bcsAndLoads>
        
         <storeResults>
@@ -229,6 +252,9 @@
             <region name="Patch2" />
             <region name="Patch3" />
           </regionList>
+          <storeResults>
+            <!-- -->
+          </storeResults>
         </piezoDirect>
       </direct>
     </couplingList>
@@ -280,7 +306,7 @@
         <storeResults>
           <nodeResult type="mechDisplacement">
             <nodeList>
-                <nodes name="P_middle"/> <!-- need to make this-->
+                <nodes name="P_middle"/> <!-- displ of central node-->
             </nodeList>
         </nodeResult>
         </storeResults>
@@ -293,24 +319,21 @@
           <region name="Patch3" />
         </regionList>
         <bcsAndLoads>
-          <constraint name="Patch1_Sdown" /> <!-- Same Potential all over the electrodes-->
-          <constraint name="Patch2_Sdown" />
-          <constraint name="Patch3_Sdown" />
+          <ground name="Patch1_Sdown" /> 
+          <ground name="Patch2_Sdown" />
+          <ground name="Patch3_Sdown" />
   
-          <constraint name="Patch1_Sup" /> 
-          <constraint name="Patch2_Sup" />
-          <constraint name="Patch3_Sup" />
+          <constraint name="Patch1_Sup" quantity="elecPotential"/>
+          <constraint name="Patch2_Sup" quantity="elecPotential"/>
+          <constraint name="Patch3_Sup" quantity="elecPotential"/>
        </bcsAndLoads>
         <storeResults>
           <nodeResult type="elecPotential">
-            <regionList>
-              <region name="Patch1_Sdown" />
-              <region name="Patch1_Sup" />
-              <region name="Patch2_Sdown" />
-              <region name="Patch2_Sup" />  
-              <region name="Patch1_Sdown" />
-              <region name="Patch1_Sup" />
-            </regionList>
+            <nodeList>
+              <nodes name="Patch1_SupNodes" /> <!-- Store potential at the electrodes-->
+              <nodes name="Patch2_SupNodes" />
+              <nodes name="Patch3_SupNodes" />
+            </nodeList>
           </nodeResult>
         </storeResults>
       </electrostatic>
@@ -325,6 +348,9 @@
             <region name="Patch2" />
             <region name="Patch3" />
           </regionList>
+          <storeResults>
+
+          </storeResults>
         </piezoDirect>
       </direct>
     </couplingList>
@@ -345,7 +371,10 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
     <!-- Mechanic PDE -->
     <mechanic subType="3d">
       <regionList>
-        <region name="PMMA_Plate"/>
+        <region name="Plate_PMMA"/>
+        <region name="Patch1" />
+        <region name="Patch2" />
+        <region name="Patch3" />
       </regionList>
       <bcsAndLoads>
         <fix name="Gamma_s1">
@@ -363,9 +392,19 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
           <comp dof="y"/>
           <comp dof="z"/>
         </fix>
+        <fix name="Gamma_s4">
+          <comp dof="x"/>
+          <comp dof="y"/>
+          <comp dof="z"/>
+        </fix>
       </bcsAndLoads>
-      <!-- do not need to store results for displ-->
-    </mechanic>
+      <storeResults>
+        <nodeResult type="mechDisplacement">
+          <nodeList>
+              <nodes name="P_middle"/> <!-- displ of central node-->
+          </nodeList>
+      </nodeResult>
+      </storeResults>    </mechanic>
 
     <electrostatic>
       <regionList>
@@ -374,22 +413,20 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
         <region name="Patch3" />
       </regionList>
       <bcsAndLoads>
-        <constraint name="Patch1_Sdown" /> <!-- Same Potential all over the electrodes-->
-        <constraint name="Patch2_Sdown" />
+        <ground name="Patch1_Sdown" /> <!-- Ground-->
+        <ground name="Patch2_Sdown" />
         <ground name="Patch3_Sdown" />
 
-        <constraint name="Patch1_Sup" /> 
-        <constraint name="Patch2_Sup" />
-        <potential name="Patch3_Sup" harmonic="500" /> <!-- Apply periodic voltage = Potential difference on Path3-->
+        <constraint name="Patch1_Sup" quantity="elecPotential"/>
+        <constraint name="Patch2_Sup" quantity="elecPotential"/>
+        <potential name="Patch3_Sup" value="500" /> <!-- Apply periodic voltage = Potential difference on Path3-->
      </bcsAndLoads>
       <storeResults>
         <nodeResult type="elecPotential">
-          <regionList>
-            <region name="Patch1_Sup" />
-            <region name="Patch2_Sup" />
-            <region name="Patch1_Sdown" />
-            <region name="Patch2_Sdown" />
-          </regionList>
+          <nodeList>
+            <nodes name="Patch1_SupNodes" /> <!-- Store potential at the electrodes of Patch 1,2-->
+            <nodes name="Patch2_SupNodes" />
+          </nodeList>
         </nodeResult>
       </storeResults>
     </electrostatic>
@@ -404,6 +441,9 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
           <region name="Patch2" />
           <region name="Patch3" />
         </regionList>
+        <storeResults>
+
+        </storeResults>
       </piezoDirect>
     </direct>
   </couplingList>
@@ -414,8 +454,8 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
 
   <analysis>
     <transient>
-      <numSteps> 1500 </numSteps>
-      <deltaT> 0.000333333 </deltaT><!-- = 0.5 / 1500 -->
+      <numSteps> 1100 </numSteps>
+      <deltaT> 0.000454545454 </deltaT><!-- = 0.5 / 1100 -->
     </transient>
   </analysis>
 
@@ -436,9 +476,10 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
         <!-- Use result from another sequenceStep as initial state of the transient simulation -->
         <initialValues>
           <initialState>
-            <sequenceStep index="1"/> <!-- use static-->
+            <sequenceStep index="1" />
           </initialState>
         </initialValues>
+  
 
         <bcsAndLoads>
           <fix name="Gamma_s1">
@@ -452,6 +493,11 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
             <comp dof="z"/>
           </fix>
           <fix name="Gamma_s3">
+            <comp dof="x"/>
+            <comp dof="y"/>
+            <comp dof="z"/>
+          </fix>
+          <fix name="Gamma_s4">
             <comp dof="x"/>
             <comp dof="y"/>
             <comp dof="z"/>
@@ -473,9 +519,9 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
           <region name="Patch3" />
         </regionList>
         <bcsAndLoads>
-          <constraint name="Patch1_Sdown" /> <!-- Same Potential all over the electrodes-->
-          <constraint name="Patch2_Sdown" />
-          <constraint name="Patch3_Sdown" />
+          <ground name="Patch1_Sdown" /> <!-- Same Potential all over the electrodes-->
+          <ground name="Patch2_Sdown" />
+          <ground name="Patch3_Sdown" />
   
           <constraint name="Patch1_Sup" /> 
           <constraint name="Patch2_Sup" />
@@ -483,10 +529,9 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
         </bcsAndLoads>
         <storeResults>
           <nodeResult type="elecPotential">
-            <regionList>
-              <region name="Patch1_Sdown" />
-              <region name="Patch1_sup" /> <!-- voltage at patch 1-->
-            </regionList>
+            <nodeList>
+              <nodes name="Patch1_SupNodes" /> <!-- voltage at patch 1-->
+            </nodeList>
           </nodeResult>
         </storeResults>
       </electrostatic>
@@ -501,8 +546,13 @@ transfer function (up to 500Hz) for the voltage at patches 1 and 2. Plot the tra
             <region name="Patch2" />
             <region name="Patch3" />
           </regionList>
+          <storeResults>
+
+          </storeResults>
         </piezoDirect>
       </direct>
     </couplingList>
   </sequenceStep>
+
+  
 </cfsSimulation>

@@ -22,8 +22,8 @@
       <damping>
         <rayleigh>
           <!-- Replace Rayleigh Damping Coefficient alpha and beta by your calculated values, it is not necessary to change the measuredFreq-->
-          <alpha> 0 </alpha>
-          <beta> 0 </beta>
+          <alpha> 0.167 </alpha>
+          <beta> 0.0005 </beta>
           <measuredFreq>0</measuredFreq>
         </rayleigh>
       </damping>
@@ -34,7 +34,7 @@
     <mechanical>
       <density>
         <linear>
-          <real> 7800 </real>
+          <real> 5195.294 </real> <!-- rho eff-->
         </linear>
       </density>
       <elasticity>
@@ -42,12 +42,13 @@
           <tensor dim1="6" dim2="6">
             <real>
               <!-- Fill the elasticity tensor with calculated values -->
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
+              <!-- It is the inverse of the compilance tensor whose entries are calculated-->
+              6.065E+10 2.855E+10 2.490E+10 0.000E+00 0.000E+00 0.000E+00
+              2.855E+10 5.482E+10 1.172E+10 0.000E+00 0.000E+00 0.000E+00
+              2.490E+10 1.172E+10 0.000E+00 0.000E+00 0.000E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 3.575E+10 0.000E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 0.000E+00 3.575E+10 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 1.406E+10
           </real>
           </tensor>
         </linear>
@@ -59,9 +60,9 @@
           <tensor dim1="3" dim2="3">
             <real>
             <!-- Fill the permittivity tensor with calculated values -->
-            0.000E+00 0.000E+00 0.000E+00
-            0.000E+00 0.000E+00 0.000E+00
-            0.000E+00 0.000E+00 0.000E+00
+            1.531E-08 0.000E+00 0.000E+00
+            0.000E+00 1.531E-08 0.000E+00
+            0.000E+00 0.000E+00 1.686E-08
           </real>
           </tensor>
         </linear>
@@ -73,9 +74,9 @@
           <tensor dim1="3" dim2="6">
             <real>
              <!-- Fill the piezoelectric coupling tensor with calculated values -->
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 0.000E+00 1.080E-09 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 1.080E-09 0.000E+00 0.000E+00
+              -3.536E-10 -3.536E-10 7.857E-10 0.000E+00 0.000E+00 0.000E+00
         </real>
           </tensor>
         </linear>

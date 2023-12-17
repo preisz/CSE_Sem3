@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<cfsSimulation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.cfs++.org/simulation https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd"
+ xmlns="http://www.cfs++.org/simulation">
+ 
+  
+ <documentation>
+   <title> Piezolectricity, Homework 2</title>
+   <authors>
+     <author> Petra Reisz </author>
+   </authors>
+   <date>2023-11-29</date>
+   <keywords>
+     <keyword>electrostatic-mechanic</keyword>
+   </keywords>
+   <references> no references </references>
+   <isVerified>no</isVerified>
+   <description>
+   Description of the simulation
+   </description>
+ </documentation>
+
+  <fileFormats>
+    <input >
+      <cdb fileName="geomHW2.cdb"/>
+    </input >
+    <output>
+      <hdf5/>
+      <text id='txt'/>
+    </output>
+    <materialData file="./mat_eff.xml" format="xml"/>
+  </fileFormats>
+
+  <domain geometryType="3d">
+    <regionList>
+      <region name="Plate_PMMA" material="PMMA">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+      <region name="Patch1" material="PIC 255">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+      <region name="Patch2" material="PIC 255">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+      <region name="Patch3" material="PIC 255">
+        <matRotation alpha="0.0" beta="0" gamma="0"/>
+      </region>
+    </regionList>
+    <surfRegionList>
+      <surfRegion name="Patch1_Sup" />
+      <surfRegion name="Patch2_Sup" />
+      <surfRegion name="Patch3_Sup" />
+      <surfRegion name="Patch1_Sdown" />
+      <surfRegion name="Patch2_Sdown" />
+      <surfRegion name="Patch3_Sdown" />
+    </surfRegionList>
+  <nodeList> <!-- CFS can pick nodes from the mesh, e.g. to write text output for this point -->
+      <nodes name="P_middle">
+          <coord x="0.0" y="0" z="0"/> <!-- this should be the middle of plate, CFS will search for the closest node -->
+       </nodes>
+      <nodes name="Patch1_SupNodes">
+          <allNodesInRegion regName="Patch1_Sup" />
+       </nodes>
+       <nodes name="Patch2_SupNodes">
+          <allNodesInRegion regName="Patch2_Sup" />
+       </nodes>
+       <nodes name="Patch3_SupNodes">
+          <allNodesInRegion regName="Patch3_Sup" />
+       </nodes>
+       <nodes name="Patch1_SdownNodes">
+          <allNodesInRegion regName="Patch1_Sdown" />
+       </nodes>
+      <nodes name="Patch2_SdownNodes">
+        <allNodesInRegion regName="Patch2_Sdown" />
+      </nodes>
+      <nodes name="Patch3_SdownNodes">
+        <allNodesInRegion regName="Patch3_Sdown" />
+      </nodes>
+  </nodeList>
+  </domain> 
+  
+  <!-- Static Analysis in sequenceStep 1-->
+  <sequenceStep index="1">
+    <analysis>
+      <static/>
+    </analysis>
+
+    <pdeList>
+      <!-- Mechanic PDE: on the plate. -->
+      <mechanic subType="3d">
+        <regionList>
+          <region name="Plate_PMMA"/>
+          <region name="Patch1" />
+          <region name="Patch2" />
+          <region name="Patch3" />
+          </regionList>
+          <bcsAndLoads>
+            <fix name="Gamma_s1">
+              <comp dof="x"/>
+              <comp dof="y"/>
+              <comp dof="z"/>
+            </fix>
+            <fix name="Gamma_s2">
+              <comp dof="x"/>
+              <comp dof="y"/>
+              <comp dof="z"/>
+            </fix>
+            <fix name="Gamma_s3">
+              <comp dof="x"/>
+              <comp dof="y"/>
+              <comp dof="z"/>
+            </fix>
+            <fix name="Gamma_s4">
+                <comp dof="x"/>
+                <comp dof="y"/>
+                <comp dof="z"/>
+            </fix>
+          <pressure
+              name="Gamma_down" value="1000"> <!-- Uniform pressure on bottom of plate-->
+          </pressure>
+        </bcsAndLoads>
+
+         <storeResults>
+          <nodeResult type="mechDisplacement">
+            <allRegions />
+          </nodeResult>
+        </storeResults>
+      </mechanic>
+
+      <!--  #################Electrostatic, pathes-->
+      <electrostatic>
+        <regionList>
+          <region name="Patch1"/>
+          <region name="Patch2" />
+          <region name="Patch3" />
+        </regionList>
+        <bcsAndLoads>
+          <constraint name="Patch1_Sup" quantity="elecPotential"/>
+          <constraint name="Patch2_Sup" quantity="elecPotential"/>
+          <constraint name="Patch3_Sup" quantity="elecPotential"/>
+
+          <ground name="Patch1_Sdown"/> <!-- Ground:bottom -->
+          <ground name="Patch2_Sdown" />
+          <ground name="Patch3_Sdown"/>
+        </bcsAndLoads>
+        <storeResults>
+          <nodeResult type="elecPotential">
+            <allRegions/>
+          </nodeResult>
+        </storeResults>
+      </electrostatic>
+    </pdeList>
+
+    <!-- Piezo Couplling##########################-->
+    <couplingList>
+      <direct>
+        <piezoDirect>
+          <regionList>
+            <!-- Regions for piezo coupling: patches-->
+            <region name="Patch1"/>
+            <region name="Patch2" />
+            <region name="Patch3" />  
+          </regionList>
+          <storeResults>
+          </storeResults>
+        </piezoDirect>
+      </direct>
+    </couplingList>
+  </sequenceStep>
+
+  
+</cfsSimulation>

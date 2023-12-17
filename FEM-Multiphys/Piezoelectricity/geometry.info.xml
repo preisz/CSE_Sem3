@@ -2,20 +2,20 @@
 
 <cfsInfo status="finished" infoWriteCounter="2" infoRejectCounter="0">
   <summary>
-    <timer wall-clock="17.09s" wall="17.087" cpu="17.0029" calls="1"/>
+    <timer wall-clock="17.13s" wall="17.132" cpu="17.1232" calls="1"/>
     <!-- memory in MB-->
-    <memory final="331.18" peak="344.35"/>
+    <memory final="331.34" peak="344.54"/>
   </summary>
   <header id="">
-    <environment started="2023-Dec-07 22:16:09" host="petrar-SwiftWorkHorse"/>
-    <progOpts problem="geometry" parameterFile="/home/petrar/PetraMaster/WS23/FEM-MultiPhys/HW2/geometry.xml" schemaPath="/home/petrar/PetraMaster/WS23/FEM-MultiPhys/CFS-2023W-Linux/share/xml" meshFile="" logConfFile="" detailed="no">
+    <environment started="2023-Dec-15 20:22:37" host="petrar-SwiftWorkHorse"/>
+    <progOpts problem="geometry" parameterFile="/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Piezoelectricity/geometry.xml" schemaPath="/home/petrar/PetraMaster/WS23/FEM-MultiPhys/CFS-2023W-Linux/share/xml" meshFile="" logConfFile="" detailed="no">
       <cfs version="23.05" name="Heavy Headache" build="Release" git_commit="9f79019e0f616e46a4ae297229478d0486b03618" git_branch="(no branch)" compiled="Oct  6 2023" exe="cfs"/>
       <openmp CFS_NUM_THREADS="1" MKL_NUM_THREADS="1" OMP_NUM_THREADS="1"/>
     </progOpts>
     <domain nx="113" ny="188" nz="2">
       <grids>
-        <timer wall-clock="16.28s" wall="16.28" cpu="16.2" calls="1"/>
-        <grid gridId="default" dimensions="3" elements="86310" nodes="237051"/>
+        <timer wall-clock="16.35s" wall="16.348" cpu="16.341" calls="1"/>
+        <grid gridId="default" dimensions="3" elements="86440" nodes="237051"/>
       </grids>
       <coordinateSystems>
         <system name="default"/>
@@ -31,6 +31,12 @@
         <region name="Gamma_s3" id="7" type="surface" regular="yes" hom="yes" nodes="909" elems="226" isQuadratic="yes"/>
         <region name="Gamma_s4" id="8" type="surface" regular="yes" hom="yes" nodes="1509" elems="376" isQuadratic="yes"/>
         <region name="Gamma_up" id="9" type="surface" regular="yes" hom="yes" nodes="64335" elems="21244" isQuadratic="yes"/>
+        <region name="Patch1_Sdown" id="10" type="surface" regular="yes" hom="yes" nodes="96" elems="25" isQuadratic="yes"/>
+        <region name="Patch1_Sup" id="11" type="surface" regular="yes" hom="yes" nodes="96" elems="25" isQuadratic="yes"/>
+        <region name="Patch2_Sdown" id="12" type="surface" regular="yes" hom="yes" nodes="96" elems="25" isQuadratic="yes"/>
+        <region name="Patch2_Sup" id="13" type="surface" regular="yes" hom="yes" nodes="96" elems="25" isQuadratic="yes"/>
+        <region name="Patch3_Sdown" id="14" type="surface" regular="yes" hom="yes" nodes="62" elems="15" isQuadratic="yes"/>
+        <region name="Patch3_Sup" id="15" type="surface" regular="yes" hom="yes" nodes="62" elems="15" isQuadratic="yes"/>
       </regions>
       <namedNodes/>
       <namedElements/>

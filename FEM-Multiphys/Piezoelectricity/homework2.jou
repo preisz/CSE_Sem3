@@ -1,0 +1,114 @@
+reset
+#{l = 750e-3}
+#{w = 450e-3}
+#{t = 8e-3}
+#{lp = 61e-3}
+#{wp = 35e-3}
+#{tp = 0.4e-3}
+
+brick x {l} y {w} z {t} #create plate
+
+nodeset 1 add surface 3 #create the fixed surface regions ->nodesets
+nodeset 1 name "Gamma_s1"
+nodeset 2 add surface 4 #create the fixed surface regions ->nodesets
+nodeset 2 name "Gamma_s2"
+nodeset 3 add surface 5 #create the fixed surface regions ->nodesets
+nodeset 3 name "Gamma_s3"
+nodeset 4 add surface 6 #create the fixed surface regions ->nodesets
+nodeset 4 name "Gamma_s4"
+
+nodeset 5 add surface 1 #create the upper surface region with the electrode
+nodeset 5 name "Gamma_up"
+nodeset 6 add surface 2 #create the down surface region with the electrode
+nodeset 6 name "Gamma_down"
+
+###### Firsrt patch ######
+brick x {lp} y {wp} z {tp}
+move volume 2 z {t/2 + tp/2}
+move volume 2 x {-l/3}
+nodeset 7 add surface 7 #create the fixed surface regions ->nodesets
+nodeset 7 name "Patch1_Sup" #upper surface, patch1
+nodeset 8 add surface 8 #create the fixed surface regions ->nodesets
+nodeset 8 name "Patch1_Sdown" #down surface, patch1
+
+### Second path #####
+brick x {lp} y {wp} z {tp}
+move volume 3 z {t/2 + tp/2} #move patch 2 on the upper surface of the plate
+nodeset 9 add surface 13 #create the fixed surface regions ->nodesets
+nodeset 9 name "Patch2_Sup" #upper surface, patch1
+nodeset 10 add surface 14 #create the fixed surface regions ->nodesets
+nodeset 10 name "Patch2_Sdown" #down surface, patch1
+
+
+### Third patch #######
+brick x {lp} y {wp} z {tp}
+move volume 4 z {t/2 + tp/2} #move patch 3 on the upper surface of the plate
+move volume 4 x {l/3} #move the patch by -w/4 down in x-direction
+move volume 4 y {w/4} #move the path by l/3*l up in y-direction
+nodeset 11 add surface 19 #create the fixed surface regions ->nodesets
+nodeset 11 name "Patch3_Sup" #upper surface, patch1
+nodeset 12 add surface 20 #create the fixed surface regions ->nodesets
+nodeset 12 name "Patch3_Sdown" #down surface, patch1
+
+
+### Merge volumes and do meshing
+imprint volume 1 2
+imprint volume 1 3
+imprint volume 1 4
+
+#{tol = 1e-6}
+merge tolerance {tol}
+
+merge volume 1 2
+merge volume 1 3
+merge volume 1 4
+
+
+#### Do meshing on the edges ##############################
+curve 10 interval 2
+curve 10 scheme equal
+curve 22 interval 2
+curve 22 scheme equal
+curve 34 interval 2
+curve 34 scheme equal
+curve 46 interval 2
+curve 46 scheme equal
+
+#### Now mesh the volumes ################################################
+volume 1 scheme auto
+mesh volume 1
+volume 2 scheme auto
+mesh volume 2
+volume 3 scheme auto
+mesh volume 3
+volume 4 scheme auto
+mesh volume 4
+
+block 1 add volume 1 #create the block
+block 1 element type hex20 #define second order HEX elements
+block 1 name "Plate_PMMA" #assign name to plate
+
+block 2 add volume 2 #create the block
+block 2 element type hex20 #define second order HEX elements
+block 2 name "Patch1" #assign name to patch 1
+
+block 3 add volume 3 #create the block
+block 3 element type hex20 #define second order HEX elements
+block 3 name "Patch2" #assign name to patch 2
+
+block 4 add volume 4 #create the block
+block 4 element type hex20 #define second order HEX elements
+block 4 name "Patch3" #assign name to patch 3
+
+
+### Export
+export ansys cdb "~/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Piezoelectricity/geomHW2.cdb"  geometry overwrite 
+
+
+
+
+
+
+
+
+

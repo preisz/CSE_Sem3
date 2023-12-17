@@ -43,55 +43,66 @@ nodeset 11 name "Patch3_Sup" #upper surface, patch1
 nodeset 12 add surface 20 #create the fixed surface regions ->nodesets
 nodeset 12 name "Patch3_Sdown" #down surface, patch1
 
+
+#Scale
+volume all scale 1e-3
+
 ### Merge volumes and do meshing
 merge volume all
 
-#### Do meshing on the edges
-curve 17, 18, 19, 20 interval 5
-17, 18, 19, 20  scheme equal
+
+#### Do meshing on the edges ##############################
+curve 1, 2, 3, 4 interval 20
+curve 1, 2, 3, 4  scheme equal
+mesh curve 1, 2, 3, 4
+
+curve 5, 6, 7, 8 interval 20
+curve 5, 6, 7, 8  scheme equal
+mesh curve 5, 6, 7, 8
+
+#curve 17, 18, 19, 20 interval 5 #maybe a bit too coarse
+curve 17, 18, 19, 20 interval 10
+curve 17, 18, 19, 20  scheme equal
 mesh curve 17, 18, 19, 20 
 
-curve 29, 30, 31, 32  interval 5
-29, 30, 31, 32  scheme equal
+#curve 29, 30, 31, 32  interval 5
+curve 29, 30, 31, 32  interval 10
+curve 29, 30, 31, 32  scheme equal
 mesh curve 29, 30, 31, 32 
 
-curve 41,42,43,44
-41,42,43,44 sheme eqqual
+curve 41,42,43,44 interval 10
+curve 41,42,43,44 sheme eqqual
 mesh curve 41,42,43,44
 
-#### Now mesh the volumes
-volume 1 size 4 #this is 2 elements in thickness direction
-#volume 1  sizing function exodus min_size 4 max_size 20 #to have less elements
+#### Now mesh the volumes ################################################
+volume 1 size 4e-3 #this is 2 elements in thickness direction
 mesh volume 1
 block 1 add volume 1 #create the block
 block 1 element type hex20 #define second order HEX elements
 block 1 name "Plate_PMMA" #assign name to plate
 
-volume 2 size 0.2 #this is 2 elements in thickness direction
+volume 2 size 0.2e-3 #this is 2 elements in thickness direction
 mesh volume 2
 block 2 add volume 2 #create the block
 block 2 element type hex20 #define second order HEX elements
 block 2 name "Patch1" #assign name to patch 1
 
-volume 3 size 0.2 #this is 2 elements in thickness direction
+volume 3 size 0.2e-3 #this is 2 elements in thickness direction
 mesh volume 3
 block 3 add volume 3 #create the block
 block 3 element type hex20 #define second order HEX elements
 block 3 name "Patch2" #assign name to patch 2
 
-volume 4 size 0.2 #this is 2 elements in thickness direction
+volume 4 size 0.2e-3 #this is 2 elements in thickness direction
 mesh volume 4
 block 4 add volume 4 #create the block
 block 4 element type hex20 #define second order HEX elements
 block 4 name "Patch3" #assign name to patch 3
 
-##Scale up to meter ##
-volume all scale 1e-3
-block all scale 1e-3
 
 ### Export
-export ansys cdb "geomHW2.cdb"  geometry overwrite 
-#export ansys cdb "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Piezoelectricity/geomHW2.cdb" #geometry overwrite 
+export ansys cdb "~/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Piezoelectricity/geomHW2.cdb"  geometry overwrite 
+
 
 
 
