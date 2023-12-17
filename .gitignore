@@ -46,6 +46,8 @@ ManyCores/Ex4/submission_11816863/
 *.cfs
 *.iges
 *.cub5
+**/history/
+**/results_hdf5/
 
 #Pics
 **/images/
