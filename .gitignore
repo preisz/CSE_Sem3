@@ -40,5 +40,15 @@
 *.jpg
 ManyCores/Ex4/submission_11816863/
 
+
+#Cubit
+*.cdb
+*.cfs
+*.iges
+*.cub5
+
+#Pics
+**/images/
+
 #Benchmarking
 **/benchmark/
