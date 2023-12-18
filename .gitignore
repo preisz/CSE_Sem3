@@ -1,6 +1,8 @@
 #TOKEN
 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
 
+*.zip
+*.tar*
 # Prerequisites
 *.d
 

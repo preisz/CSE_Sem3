@@ -105,35 +105,34 @@ $$ s_2 = 0 = S^E_{2j} \sigma_j + d_{2j}E_j = S^E_{22} \sigma_2 + d_{23}E_3$$
 when assuming that the plate in the width (1) direction expands to a stress free configuration, so that $\sigma_j \neq 0 $ only for $j = 2$. Looking at $S^E$ we see that $S^E_{22}=S^E_{11}$ and $d_{23} = d_{31}$ . $E_3$ is calculated above ($1250 V/mm$)
 
 $$
-s_2 = 0 = S^E_{11} \frac{F_B}{A_2} + d_{31}E_3 \\
+s_2 = 0 = S^E_{11} \frac{F_B}{A_2} + d^{sim}_{31}E_3 \\
 \Longrightarrow  S^{sim}_{11} = -\frac{A_2}{F_B} d^{sim}_{31}E_3
-= \frac{35 \times 0.4 mm²}{256N} \cdot  3.536 \times 10^{-10}\frac{C}{N} \cdot 1250 \frac{V}{mm}
 = 2.421 \times 10^{-11} m² / N
  $$
  
-In the next step, we calculate $S^{sim}_{12}$, with $s_1 = -650 \times 10³ \mu m/mm$:
+In the next step, we calculate $S^{sim}_{12}$, with $s_1 = -650 \times 10³ \mu m/mm$ ( strain in the width direction):
 $$
 s_1 = S_{1j}\sigma_j + d_{1j}Ej = S_{12}\sigma_2 + d_{13}E_3 \\
 .\\
-\Longrightarrow S^{sim}_{12} = \frac{(s_1 - d_{13}E_3)}{\sigma_2} = (s_1 - d_{13}E_3) \cdot \frac{A_2}{F_B} = -1.1375 \times 10^{-11} \frac{m²}{N}
+\Longrightarrow S^{sim}_{12} = \frac{(s_1 - d^{sim}_{13}E_3)}{\sigma_2} = (s_1 - d^{sim}_{13}E_3) \cdot \frac{A_2}{F_B} = -1.134 \times 10^{-11} \frac{m²}{N}
 $$
 Using the the relations between elasticity and compilance tensor for transfersally isotropic materials (see [Wikipedia](https://en.wikipedia.org/wiki/Transverse_isotropy)):
 ![Alt text](compilance_vsEmodulus.png)
 
 With this relation, the effective E-modulus is given as
 
-$$  E^{sim} = \frac{1}{S^{sim}_{11}}  = 41.37\times 10⁹ \frac{N}{m²}= 41.37 GPa$$
+$$  E^{sim} = \frac{1}{S^{sim}_{11}}  = 41.37\times 10⁹ \frac{N}{m²}= 41.312 GPa$$
 
-This is a change of  $ k_2 = \frac{E^{sim}}{E} = \frac{E^{sim}}{S^{-1}_{11}} =  0.666$
+This is a change of  $ k_2 = \frac{E^{sim}}{E} = \frac{E^{sim}}{S^{-1}_{11}} =  0.66512$
 Applying it to other coefficients (the Poisson's ratios are from [here](https://www.researchgate.net/figure/Material-parameters-of-PIC-255_tbl2_259230226)):
 
 $$  
-\rho^{sim} = \rho \cdot k_2 = 5195.294 kg/m³ \\
+\rho^{sim} = \rho \cdot k_2 = 5187.982 kg/m³ \\
 \nu^{sim}_{12} = \nu \cdot k_2 = 0.2398 \\
 \nu^{sim}_{23} = \nu^{sim}_{13} = 0.3064 \\
-S^{sim}_{44}= S_{44} \cdot k_2 = 2.797 \times 10^{-11} \\
-S^{sim}_{33} = S_{33} \cdot k_2 = 1.3787 \times 10^{-11} \\
-S^{sim}_{13} = S_{13} \cdot k_2 = -5.661 \times 10^{-12}
+S^{sim}_{44}= S_{44} \cdot k_2 = 2.794 \times 10^{-11} \\
+S^{sim}_{33} = S_{33} \cdot k_2 = 1.377 \times 10^{-11} \\
+S^{sim}_{13} = S_{13} \cdot k_2 = -5.653 \times 10^{-12}
 $$
 <br><br>
 
@@ -151,3 +150,7 @@ $$ k_3 = \frac{\epsilon^{sim}_{33}}{\epsilon_{33}} = \frac{1.686 \times 10^{-8}}
 So the effective relative permittivity:
 
 $$ \epsilon_{11}^{sim} = \epsilon_{11} \cdot k_3 = 1.53110 \times 10^{-8}  \frac{As}{Vm}$$
+
+The elasticity tensor $C^{sim}$ is calculated by taking the inverse of $S^{E}$, where we take instead of the entries from the assignment description the calculated "sim" entries. The calculated elasticity tensor is displayed at the bottom of the calculation below.
+
+The effective couple tensor in e-Form $e^{sim}$ is calculated as $e = C^{sim} : d^{sim}$. It is displayed at the bottom of the calculation below.
