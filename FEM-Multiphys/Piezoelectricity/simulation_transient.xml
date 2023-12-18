@@ -79,28 +79,123 @@
   </nodeList>
   </domain> 
   
-
-
-
-  <!-- Harmonic Analysis in sequenceStep 3-->
+  <!-- Static Analysis in sequenceStep 1-->
   <sequenceStep index="1">
     <analysis>
-      <harmonic>
-        <numFreq> 10 </numFreq>
-        <startFreq> 1 </startFreq>
-        <stopFreq> 500 </stopFreq>  <!-- Up to 500Hz -->
-      </harmonic>
+      <static/>
     </analysis>
 
     <pdeList>
-      <!-- Mechanic PDE -->
+      <!-- Mechanic PDE: on the plate. -->
       <mechanic subType="3d">
         <regionList>
           <region name="Plate_PMMA"/>
           <region name="Patch1" />
           <region name="Patch2" />
           <region name="Patch3" />
+          </regionList>
+          <bcsAndLoads>
+            <fix name="Gamma_s1">
+              <comp dof="x"/>
+              <comp dof="y"/>
+              <comp dof="z"/>
+            </fix>
+            <fix name="Gamma_s2">
+              <comp dof="x"/>
+              <comp dof="y"/>
+              <comp dof="z"/>
+            </fix>
+            <fix name="Gamma_s3">
+              <comp dof="x"/>
+              <comp dof="y"/>
+              <comp dof="z"/>
+            </fix>
+            <fix name="Gamma_s4">
+                <comp dof="x"/>
+                <comp dof="y"/>
+                <comp dof="z"/>
+            </fix>
+          <pressure
+              name="Gamma_down" value="1000"> <!-- Uniform pressure on bottom of plate-->
+          </pressure>
+        </bcsAndLoads>
+
+         <storeResults>
+            <!-- do not need to store static results-->
+        </storeResults>
+      </mechanic>
+
+      <!--  #################Electrostatic, pathes-->
+      <electrostatic>
+        <regionList>
+          <region name="Patch1"/>
+          <region name="Patch2" />
+          <region name="Patch3" />
         </regionList>
+        <bcsAndLoads>
+          <constraint name="Patch1_Sup" quantity="elecPotential"/>
+          <constraint name="Patch2_Sup" quantity="elecPotential"/>
+          <constraint name="Patch3_Sup" quantity="elecPotential"/>
+
+          <ground name="Patch1_Sdown"/> <!-- Ground:bottom -->
+          <ground name="Patch2_Sdown" />
+          <ground name="Patch3_Sdown"/>
+        </bcsAndLoads>
+        <storeResults>
+            <!-- do not need to store static results-->
+        </storeResults>
+      </electrostatic>
+    </pdeList>
+
+    <!-- Piezo Couplling##########################-->
+    <couplingList>
+      <direct>
+        <piezoDirect>
+          <regionList>
+            <!-- Regions for piezo coupling: patches-->
+            <region name="Patch1"/>
+            <region name="Patch2" />
+            <region name="Patch3" />  
+          </regionList>
+          <storeResults>
+          </storeResults>
+        </piezoDirect>
+      </direct>
+    </couplingList>
+  </sequenceStep>
+
+ <!-- Transient analysis in sequenceStep 4 -->
+  <sequenceStep index="2">
+
+  <analysis>
+    <transient>
+      <numSteps> 1100 </numSteps>
+      <deltaT> 0.000454545454 </deltaT><!-- = 0.5 / 1100 -->
+    </transient>
+  </analysis>
+
+    <pdeList>
+      <mechanic subType="3d">
+        <regionList>
+          <region name="Plate_PMMA" dampingId="rayleigh_damping"/>
+          <region name="Patch1" />
+          <region name="Patch2" />
+          <region name="Patch3" />
+        </regionList>
+
+        <dampingList>
+          <rayleigh id="rayleigh_damping">
+          </rayleigh>
+        </dampingList>
+
+        <!-- Use result from another sequenceStep as initial state of the transient simulation -->
+        <initialValues>
+          <initialState>
+            <sequenceStep index="1" />
+          </initialState>
+        </initialValues>
+  
+
         <bcsAndLoads>
           <fix name="Gamma_s1">
             <comp dof="x"/>
@@ -118,20 +213,18 @@
             <comp dof="z"/>
           </fix>
           <fix name="Gamma_s4">
-              <comp dof="x"/>
-              <comp dof="y"/>
-              <comp dof="z"/>
+            <comp dof="x"/>
+            <comp dof="y"/>
+            <comp dof="z"/>
           </fix>
-          <pressure name="Gamma_down" value="1000"/> 
-         <!--<pressure name="Gamma_down" value="1000*sin(2*pi*1*t)"/> -->  <!-- Harmonic pressure on bottom-->
         </bcsAndLoads>
         <storeResults>
           <nodeResult type="mechDisplacement">
             <allRegions />
             <nodeList>
-                <nodes name="P_middle"/> <!-- displ of central node-->
+              <nodes name="P_middle" />
             </nodeList>
-        </nodeResult>
+          </nodeResult>
         </storeResults>
       </mechanic>
 
@@ -142,22 +235,20 @@
           <region name="Patch3" />
         </regionList>
         <bcsAndLoads>
-          <ground name="Patch1_Sdown" /> 
+          <ground name="Patch1_Sdown" /> <!-- Same Potential all over the electrodes-->
           <ground name="Patch2_Sdown" />
           <ground name="Patch3_Sdown" />
   
-          <constraint name="Patch1_Sup" quantity="elecPotential"/>
-          <constraint name="Patch2_Sup" quantity="elecPotential"/>
-          <constraint name="Patch3_Sup" quantity="elecPotential"/>
-       </bcsAndLoads>
+          <constraint name="Patch1_Sup" /> 
+          <constraint name="Patch2_Sup" />
+          <constraint name="Patch3_Sup" />
+        </bcsAndLoads>
         <storeResults>
           <nodeResult type="elecPotential">
             <allRegions />
-            <!-- <nodeList>
-              <nodes name="Patch1_SupNodes" /> 
-              <nodes name="Patch2_SupNodes" />
-              <nodes name="Patch3_SupNodes" />
-            </nodeList> --><!-- Store potential at the electrodes-->
+            <nodeList>
+              <nodes name="Patch1_SupNodes" /> <!-- voltage at patch 1-->
+            </nodeList>
           </nodeResult>
         </storeResults>
       </electrostatic>
@@ -173,7 +264,6 @@
             <region name="Patch3" />
           </regionList>
           <storeResults>
-
           </storeResults>
         </piezoDirect>
       </direct>

@@ -22,19 +22,18 @@
       <damping>
         <rayleigh>
           <!-- Replace Rayleigh Damping Coefficient alpha and beta by your calculated values, it is not necessary to change the measuredFreq-->
-          <alpha> 0.167 </alpha>
-          <beta> 0.0005 </beta>
+          <alpha> 8.748 </alpha>
+          <beta> 9.818E-6 </beta>
           <measuredFreq>0</measuredFreq>
         </rayleigh>
       </damping>
       </mechanical>
   </material>
-  
   <material name="PIC 255">
     <mechanical>
       <density>
         <linear>
-          <real> 5195.294 </real> <!-- rho eff-->
+          <real> 7800 </real>
         </linear>
       </density>
       <elasticity>
@@ -42,13 +41,12 @@
           <tensor dim1="6" dim2="6">
             <real>
               <!-- Fill the elasticity tensor with calculated values -->
-              <!-- It is the inverse of the compilance tensor whose entries are calculated-->
-              6.065E+10 2.855E+10 2.490E+10 0.000E+00 0.000E+00 0.000E+00
-              2.855E+10 5.482E+10 1.172E+10 0.000E+00 0.000E+00 0.000E+00
-              2.490E+10 1.172E+10 0.000E+00 0.000E+00 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 3.575E+10 0.000E+00 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 3.575E+10 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 1.406E+10
+              2.251E+11 1.969E+11 1.733E+11 0.000E+00 0.000E+00 0.000E+00
+              1.969E+11 2.251E+11 1.733E+11 0.000E+00 0.000E+00 0.000E+00
+              1.733E+11 1.733E+11 1.744E+11 0.000E+00 0.000E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 1.584E+10 0.000E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 0.000E+00 1.584E+10 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 0.000E+00 0.000E+00 1.407E+10
           </real>
           </tensor>
         </linear>
@@ -74,9 +72,9 @@
           <tensor dim1="3" dim2="6">
             <real>
              <!-- Fill the piezoelectric coupling tensor with calculated values -->
-              0.000E+00 0.000E+00 0.000E+00 0.000E+00 1.080E-09 0.000E+00
-              0.000E+00 0.000E+00 0.000E+00 1.080E-09 0.000E+00 0.000E+00
-              -3.536E-10 -3.536E-10 7.857E-10 0.000E+00 0.000E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 0.000E+00 17.13E+00 0.000E+00
+              0.000E+00 0.000E+00 0.000E+00 17.13E+00 0.000E+00 0.000E+00
+              -13.07E+00 -13.07E+00 14.55E+00 0.000E+00 0.000E+00 0.000E+00
         </real>
           </tensor>
         </linear>
