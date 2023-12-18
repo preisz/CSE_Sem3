@@ -66,7 +66,7 @@ $$ d^T = =\begin{bmatrix}
 0 & 0 & 0 
 \end{bmatrix}$$
 We can calculate as following:
-- stress free nominal displacement $\Delta L_0 = -27 \mu m$ in the length direction. 
+- stress free nominal displacement $\Delta L_0 = -27 \mu m$ in the length (2) direction. 
 - So, the stress $\sigma = 0$ (since stress-free configuration)
 - Let's take the d-form of the constitutive equation:
 $$ s_2 = S^E_{2j}\sigma_j + d_{2j} E_j   $$
@@ -89,12 +89,12 @@ $$ k= \frac{d^{simp}_{31}}{d_{31}}=
 
 This results in
 
-$d^{simp}_{31}=-180\cdot 10^{-12}\frac{C}{N}\cdot k = 3.536 \times 10^{-10}C/N,$ 
-$d^{simp}_{33}= 400\cdot 10^{-12}\frac{C}{N} \cdot k = 785.77 \cdot 10^{-12}\frac{C}{N},$
+$d^{simp}_{31}=-180\cdot 10^{-12}\frac{C}{N}\cdot k = -3.541 \times 10^{-10}C/N,$ 
+$d^{simp}_{33}= 400\cdot 10^{-12}\frac{C}{N} \cdot k = 7.869 \cdot 10^{-10}\frac{C}{N},$
 
 
  and
-$d^{simp}_{15}= 550\cdot 10^{-12}\frac{C}{N} = 1080.44\cdot 10^{-12}\frac{C}{N}$.<br><br>
+$d^{simp}_{15}= 550\cdot 10^{-12}\frac{C}{N} = 1.082 \cdot 10^{-10}\frac{C}{N}$.<br><br>
 
 _Calculate the material coefficients $S^{simp}_{11}$ and $S^{simp}_{12}$ and the effective youngs modulus $E^{simp}_{L}$ in the plane normal to thickness direction. Apply the change in young's modulus to other material coefficients. (Hint: Use the d-form and the blocking force)._ (**1 point**)
 _
@@ -108,14 +108,9 @@ $$
 s_2 = 0 = S^E_{11} \frac{F_B}{A_2} + d_{31}E_3 \\
 \Longrightarrow  S^{sim}_{11} = -\frac{A_2}{F_B} d^{sim}_{31}E_3
 = \frac{35 \times 0.4 mm²}{256N} \cdot  3.536 \times 10^{-10}\frac{C}{N} \cdot 1250 \frac{V}{mm}
-= 2.417 \times 10^{-8} mm \cdot C \cdot V / N²
+= 2.421 \times 10^{-11} m² / N
  $$
-
- Converting the units in $mm^2/N$:
- $$
-  S^{sim}_{11}  = 2.417 \times 10^{-8} \cdot \frac{10^{3}mm^2}{N} = 2.417 \times 10^{-5} \frac{mm^2}{N} = 2.417 \times 10^{-11} \frac{m^2}{N}
- $$
-
+ 
 In the next step, we calculate $S^{sim}_{12}$, with $s_1 = -650 \times 10³ \mu m/mm$:
 $$
 s_1 = S_{1j}\sigma_j + d_{1j}Ej = S_{12}\sigma_2 + d_{13}E_3 \\
