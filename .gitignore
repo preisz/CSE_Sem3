@@ -41,7 +41,7 @@
 ManyCores/Ex4/submission_11816863/
 
 
-#Cubit
+#Cubit, FEM Simulations
 *.cdb
 *.cfs
 *.iges
@@ -49,6 +49,7 @@ ManyCores/Ex4/submission_11816863/
 **/history/
 **/results_hdf5/
 *.info.xml
+*CFS-2023W-Linux*
 
 #Pics
 **/images/
