@@ -8,5 +8,5 @@ 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
 
 Personal access token:
 ```bash
-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
-``
+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
+```
