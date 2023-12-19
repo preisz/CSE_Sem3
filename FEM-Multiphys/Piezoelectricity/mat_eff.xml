@@ -22,8 +22,8 @@
       <damping>
         <rayleigh>
           <!-- Replace Rayleigh Damping Coefficient alpha and beta by your calculated values, it is not necessary to change the measuredFreq-->
-          <alpha> 8.748 </alpha>
-          <beta> 9.818E-6 </beta>
+          <alpha> 8.7610 </alpha>
+          <beta> 9.80338E-6 </beta>
           <measuredFreq>0</measuredFreq>
         </rayleigh>
       </damping>

@@ -153,11 +153,11 @@
         <storeResults>
           <nodeResult type="elecPotential">
             <allRegions />
-            <!-- <nodeList>
+            <nodeList>
               <nodes name="Patch1_SupNodes" /> 
               <nodes name="Patch2_SupNodes" />
               <nodes name="Patch3_SupNodes" />
-            </nodeList> --><!-- Store potential at the electrodes-->
+            </nodeList> <!-- Store potential at the electrodes-->
           </nodeResult>
         </storeResults>
       </electrostatic>

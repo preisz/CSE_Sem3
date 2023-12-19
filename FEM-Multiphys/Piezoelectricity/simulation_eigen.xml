@@ -151,6 +151,9 @@
         <storeResults>
             <nodeResult type="elecPotential">
               <allRegions/>
+              <nodeList>
+                <nodes name="Patch1_SupNodes" />
+              </nodeList>
             </nodeResult>
         </storeResults>
       </electrostatic>
@@ -165,7 +168,7 @@
             <region name="Patch3" />
           </regionList>
           <storeResults>
-            <!-- -->
+          <!-- -->
           </storeResults>
         </piezoDirect>
       </direct>
