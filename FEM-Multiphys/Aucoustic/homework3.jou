@@ -1,0 +1,68 @@
+reset
+#{ a = 0.12 }
+#{ b = 0.2 }
+#{ c = 0.1 }
+#{ d = (2/3)*b}
+#{ e = 0.375 }
+#{ r = 1.0 }
+
+#this is not clear
+#{ f = 1.5 }
+
+
+# create overall domain
+create surface circle radius {f} zplane
+webcut surface 1  with plane yplane offset { 0 }
+delete body 1 #lower part remove
+
+#scatterer###############################
+Create Vertex {-b/2} {f/4 + a/2} 0
+Create Vertex {b/2} {f/4 + a/2} 0
+Create Vertex {-b/2} {f/4 - a/2} 0
+Create Vertex {b/2} {f/4 - a/2} 0
+Create Vertex 0 {f/4 - a/2} 0
+
+Create Vertex {-d/2} {f/4 -a/2} 0
+Create Vertex {d/2} {f/4 - a/2} 0
+
+create curve vertex 5 6  
+create curve vertex 5 7
+create curve vertex 6 8
+create curve arc radius {c} center location 0 {f/4-a/2} 0 normal 0 0 1 start angle -180 stop angle 0
+
+create surface curve 6 7 8 9 #make surface
+#BCs, excitattion##################################
+nodeset 1 add curve 5  
+nodeset 1 name "Gamma_ABC" #absorbing boundary
+nodeset 2 add curve 4 
+nodeset 2 name "Gamma_wall" #wall boundary
+
+##excitation center, endpoints, create nodeset##############
+Create Vertex {-e/2} 0 0
+Create Vertex {e/2} 0 0
+create curve vertex 16 17
+
+nodeset 3 add curve 10 
+nodeset 3 name "Gamma_exc"
+
+### Merge volumes and do meshing ############################
+imprint surface 3 4  with curve 6 7 8 9 
+merge tolerance {1e-6}
+merge surface 5 6
+
+
+# regions
+block 1 add surface 6 
+block 1 name "S_domain"
+block 2 add surface 5 
+block 2 name "S_scatterer"
+
+#mesh
+block 1 element type quad8
+block 2 element type quad8
+
+surface 5 6 size 0.05
+mesh surface 5 6
+surface 5 6 smooth scheme laplacian
+smooth surface 5 6
+export ansys cdb "homework3.cdb"  overwrite 
