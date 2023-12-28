@@ -49,7 +49,7 @@ nodeset 3 name "Gamma_exc"
 imprint surface 3 4  with curve 6 7 8 9 
 merge tolerance {1e-6}
 merge surface 5 6
-
+merge curve 4 10 
 
 # regions
 block 1 add surface 6 
