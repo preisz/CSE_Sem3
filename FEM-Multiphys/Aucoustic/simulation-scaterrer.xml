@@ -40,6 +40,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     <domain geometryType="axi">
         <regionList>
             <region name="S_domain" material="air"></region>
+            <region name="S_scatterer" material="foam"></region>
         </regionList>
     </domain>
     
@@ -66,12 +67,12 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                     <nodeResult type="acouPressure">
                         <allRegions/>
                     </nodeResult>
-                    <!--   <sensorArray type="acouPressure" fileName="history/transient-acouPressure-monitor">
+                    <sensorArray type="acouPressure" fileName="history/mic1-soundhardscatter">
                         <parametric>
                             <list comp="x" start="10e-2" stop="10e-2" inc="0"/>
                             <list comp="y" start="10e-2" stop="10e-2" inc="0"/>
                         </parametric>
-                    </sensorArray>   -->
+                    </sensorArray> 
                 </storeResults>
             </acoustic>
         </pdeList>
