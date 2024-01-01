@@ -40,9 +40,9 @@ delete vertex 15
 
 #BCs, excitattion##################################
 nodeset 1 add curve 1 3  
-nodeset 1 name "Gamma_ABC" #absorbing boundary
+nodeset 1 name "Gamma_wall" #absorbing boundary
 nodeset 2 add curve 4 
-nodeset 2 name "Gamma_wall" #wall boundary
+nodeset 2 name "Gamma_ABC" #wall boundary
 nodeset 3 add curve 2  
 nodeset 3 name "Gamma_exc" #excitation center
 
@@ -59,14 +59,14 @@ merge curve 1 2 3
 block 1 add surface 1
 block 1 name "S_domain"
 
-#block 2 add surface 2
+block 2 add surface 2
 block 2 name "S_scatterer"
 
 #mesh
 block 1 element type quad8
 block 2 element type quad8
 
-surface 1 2 size 0.003
+surface 1 2 size 0.03
 mesh surface 1 2
 
 surface 1 2 smooth scheme laplacian
@@ -74,4 +74,5 @@ smooth surface 1 2
 
 #export ansys cdb "homework3.cdb"  overwrite 
 export ansys cdb "/home/reiszp/CSE_Sem3/FEM-Multiphys/Aucoustic/homework3.cdb" overwrite
+
 
