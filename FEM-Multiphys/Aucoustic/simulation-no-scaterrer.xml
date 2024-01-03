@@ -20,6 +20,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     The interested frequency range of the study is 100 to 1000 Hz.
     The excitation boundary condition is characterized by a uniform normal velocity with an amplitude of 1 at Γe .
     Absorbing boundary condition (ABC) is assumed to simulate free field condition at ΓABC
+    No scattere in the domain only solve acoustic equation.
     </description>
 </documentation>
 
@@ -46,8 +47,8 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     <sequenceStep index="1">
         <analysis>
             <harmonic>
-                <numFreq>10</numFreq>
-                <startFreq>10</startFreq>
+                <numFreq>4</numFreq>
+                <startFreq>100</startFreq>
                 <stopFreq>1000</stopFreq>
                 <sampling>linear</sampling>
         </harmonic>

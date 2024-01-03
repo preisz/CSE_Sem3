@@ -7,6 +7,7 @@ reset
 #{ r = 1.0 }
 
 #{ f = 3 }
+#{meshsize = 0.034}
 
 
 # create overall domain##############################
@@ -33,9 +34,14 @@ create curve vertex 9 11
 create curve vertex 10 12
 
 Create Vertex 0 {f/4 - a/2} 0 #midpoint of arc, ID 15
-create curve arc center vertex 15 12 11 radius 0.1 normal 0 0 -1
+create curve arc center vertex 15 12 11 radius {c} normal 0 0 -1
+create surface curve 5 6 7 8  #make surface of scatterer
 
-create surface curve 5 6 7 8 #on surface 1 #make surface of scatterer
+create curve arc radius {d/2} center location at vertex 15 normal 0 0 1 start angle -180 stop angle 0
+create curve vertex 18 19
+create surface curve 9 10 #innner hole in scatter
+subtract surface 3 from surface 2  #make the hole
+
 delete vertex 15
 
 #BCs, excitattion##################################
@@ -45,11 +51,15 @@ nodeset 2 add curve 4
 nodeset 2 name "Gamma_ABC" #wall boundary
 nodeset 3 add curve 2  
 nodeset 3 name "Gamma_exc" #excitation center
+nodeset 4 add curve 5 6 7 8
+nodeset 4 name "Gamma_sep" #separator boundary between air and scatterer
+nodeset 5 add curve 11
+nodeset 5 name "Gamma_fix" #fix part
 
 ### Merge volumes and do meshing ############################
-imprint surface 1 2  with curve 5 6 7 8  keep
+imprint surface 1 4  with curve 5 6 7 8  keep
 merge tolerance {1e-6}
-merge surface 1 2
+merge surface 1 4
 
 imprint curve 1 2 3
 merge tolerance {1e-6}
@@ -59,20 +69,22 @@ merge curve 1 2 3
 block 1 add surface 1
 block 1 name "S_domain"
 
-block 2 add surface 2
+block 2 add surface 4
 block 2 name "S_scatterer"
 
 #mesh
 block 1 element type quad8
 block 2 element type quad8
 
-surface 1 2 size 0.03
-mesh surface 1 2
+surface 1 4 size {meshsize}
+mesh surface 1 4
 
-surface 1 2 smooth scheme laplacian
-smooth surface 1 2
+surface 1 4 smooth scheme laplacian
+smooth surface 1 4
 
 #export ansys cdb "homework3.cdb"  overwrite 
-export ansys cdb "/home/reiszp/CSE_Sem3/FEM-Multiphys/Aucoustic/homework3.cdb" overwrite
+export ansys cdb "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Aucoustic/homework3.cdb" overwrite
+
+
 
 
