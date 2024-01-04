@@ -51,8 +51,8 @@ nodeset 2 add curve 4
 nodeset 2 name "Gamma_ABC" #wall boundary
 nodeset 3 add curve 2  
 nodeset 3 name "Gamma_exc" #excitation center
-nodeset 4 add curve 5 6 7 8
-nodeset 4 name "Gamma_sep" #separator boundary between air and scatterer
+nodeset 4 add curve 5 6 7 8 12
+nodeset 4 name "Gamma_sep" #separator boundary between air and scatterer, also inner arc curve (12) w/o fix
 nodeset 5 add curve 11
 nodeset 5 name "Gamma_fix" #fix part
 

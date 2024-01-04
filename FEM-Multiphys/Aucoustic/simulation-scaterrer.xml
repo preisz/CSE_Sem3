@@ -20,7 +20,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     The interested frequency range of the study is 100 to 1000 Hz.
     The excitation boundary condition is characterized by a uniform normal velocity with an amplitude of 1 at Γe .
     Absorbing boundary condition (ABC) is assumed to simulate free field condition at ΓABC.
-    A rigid scatter is considered in the domain (sound hard=homogenous Neumann BC, no extra spec for that in bcsAndLoads)
+    A rigid scatter is considered in the domain :as sound hard, sets the normal acceleration — and thus also the normal velocity — to zero at the edge
     </description>
 </documentation>
 
@@ -61,9 +61,10 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                     <region name="S_domain"/>
                 </regionList>
                 <bcsAndLoads>
-                    <normalVelocity name="Gamma_exc" value="1" />
+                    <normalVelocity name="Gamma_exc" value="1.0" />
                     <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
-                    <normalVelocity name="Gamma_fix" value="0"/>
+                    <normalVelocity name="Gamma_fix" value="0.0"/>
+                    <normalVelocity name= "Gamma_sep" value ="0.0" />
                 </bcsAndLoads>
                 <storeResults>
                     <nodeResult type="acouPressure">
