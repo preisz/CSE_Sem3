@@ -114,6 +114,10 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                             <list comp="y" start="1.0" stop="1.0" inc="0"/>
                          </parametric>
                     </sensorArray>
+                    <sensorArray>
+                      <coordinateFile fileName="coordinates.csv" delimiter="," 
+                      xCoordColumn="1" yCoordColumn="2"/>
+                    </sensorArray>
                   </storeResults>
                 </acoustic>
                 
