@@ -57,16 +57,20 @@ nodeset 5 add curve 11
 nodeset 5 name "Gamma_fix" #fix part
 
 ### Merge volumes and do meshing ############################
-imprint surface 1 4  with curve 5 6 7 8  keep
-merge tolerance {1e-6}
+#imprint surface 1 4  with curve 5 6 7 8  keep
+#merge tolerance {1e-6}
 merge surface 1 4
 
-imprint curve 1 2 3
-merge tolerance {1e-6}
+#imprint curve 1 2 3
+#merge tolerance {1e-6}
 merge curve 1 2 3
 
+imprint all
+merge all
+
 # regions
-block 1 add surface 1
+#block 1 add surface 1
+block 1 add surface 6 7
 block 1 name "S_domain"
 
 block 2 add surface 4
@@ -76,14 +80,15 @@ block 2 name "S_scatterer"
 block 1 element type quad8
 block 2 element type quad8
 
-surface 1 4 size {meshsize}
-mesh surface 1 4
+surface 4 6 7 size {meshsize}
+mesh surface 4 6 7
 
-surface 1 4 smooth scheme laplacian
-smooth surface 1 4
+surface 4 6 7 smooth scheme laplacian
+smooth surface 4 6 7
 
 #export ansys cdb "homework3.cdb"  overwrite 
 export ansys cdb "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Aucoustic/homework3.cdb" overwrite
+
 
 
 

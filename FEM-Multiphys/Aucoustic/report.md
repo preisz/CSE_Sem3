@@ -36,5 +36,8 @@ _2. with rigid scatterer_
 The simulation setup without the rigid scatterer can be found in [simulation-no-scaterrer.xml](simulation-no-scaterrer.xml). When having the rigid scatterer, one can still only go for the solution of the acoustic PDE, with sound hard boundary conditions on the boundary between the air and scatterer domain. This corresponds to the homogenous (natural) Neumann boundary condition.
 
 #### Compare the results by answering the following questions.
-• _plot the pressure field at 100, 400, 700 and 1000 Hz with and without scattering. (1 Point)_
+- _plot the pressure field at 100, 400, 700 and 1000 Hz with and without scattering. (1 Point)_
 On the graphics below, the magnitudde of the acousic pressure is illustrated.
+
+- _at the mentioned frequencies, create polar plots of the acoustic pressure amplitude at a radius of 1 m around the excitation_
+

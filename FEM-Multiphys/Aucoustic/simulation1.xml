@@ -19,12 +19,10 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     <description>
     The interested frequency range of the study is 100 to 1000 Hz.
     The excitation boundary condition is characterized by a uniform normal velocity with an amplitude of 1 at Γe .
-    Absorbing boundary condition (ABC) is assumed to simulate free field condition at ΓABC.
-    A rigid scatter is considered in the domain (sound hard=homogenous Neumann BC, no extra spec for that in bcsAndLoads)
+    Absorbing boundary condition (ABC) is assumed to simulate free field condition at ΓABC
+    No scatterer in the domain only solve acoustic equation.
     </description>
 </documentation>
-
-
 
     <!-- define which files are needed for simulation input & output-->
     <fileFormats>
@@ -38,26 +36,63 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     </fileFormats>
 
     <!-- material assignment -->
-    <domain geometryType="axi">
+    <domain geometryType="plane">
         <regionList>
             <region name="S_domain" material="air"></region>
-            <region name="S_scatterer" material="foam"></region>
+            <region name="S_scatterer" material="air"></region>
         </regionList>
     </domain>
     
     <sequenceStep index="1">
         <analysis>
             <harmonic>
-                <numFreq>4</numFreq>
-                <startFreq>100</startFreq>
-                <stopFreq>1000</stopFreq>
-                <sampling>linear</sampling>
-        </harmonic>
+                <frequencyList>
+                    <freq value="100" />
+                    <freq value="400" />
+                    <freq value="700" />
+                    <freq value="1000" />
+                </frequencyList>
+         </harmonic>
         </analysis>
         <pdeList>
             <acoustic formulation="acouPressure">
                 <regionList>
-                    <!-- include all regions you want to use in this PDE -->
+                    <region name="S_domain"/>
+                    <region name="S_scatterer" />
+                </regionList>
+                <bcsAndLoads>
+                    <normalVelocity name="Gamma_exc" value="1" />
+                    <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
+                </bcsAndLoads>
+                <storeResults>
+                    <nodeResult type="acouPressure">
+                        <allRegions/>
+                    </nodeResult>
+                    <sensorArray type="acouPressure" fileName="history/mic1-soundhard-noscatterer">
+                        <parametric>
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="10.0" inc="0"/>
+                        </parametric>
+                    </sensorArray> 
+                </storeResults>
+            </acoustic>
+        </pdeList>
+    </sequenceStep>
+
+    <sequenceStep index="2">
+        <analysis>
+            <harmonic>
+                <frequencyList>
+                    <freq value="100" />
+                    <freq value="400" />
+                    <freq value="700" />
+                    <freq value="1000" />
+                </frequencyList>
+         </harmonic>
+        </analysis>
+        <pdeList>
+            <acoustic formulation="acouPressure">
+                <regionList>
                     <region name="S_domain"/>
                 </regionList>
                 <bcsAndLoads>
@@ -70,10 +105,11 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                         <allRegions/>
                     </nodeResult>
                     <sensorArray type="acouPressure" fileName="history/mic1-soundhardscatter">
+                        <!-- save result at x = 0 , y = 1-->
                         <parametric>
-                            <list comp="x" start="10e-2" stop="10e-2" inc="0"/>
-                            <list comp="y" start="10e-2" stop="10e-2" inc="0"/>
-                        </parametric>
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="10.0" inc="0"/>
+                         </parametric>
                     </sensorArray> 
                 </storeResults>
             </acoustic>

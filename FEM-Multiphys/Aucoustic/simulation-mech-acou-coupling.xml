@@ -37,18 +37,18 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     </fileFormats>
 
     <!-- material assignment -->
-    <domain geometryType="axi">
+    <domain geometryType="plane">
         <regionList>
             <region name="S_domain" material="air"></region>
             <region name="S_scatterer" material="foam"></region>
         </regionList>
     </domain>
     
-    <!-- acoustic EVs -->
+    <!-- acoustic EVs , sound-hard BC-->
     <sequenceStep index="1">
         <analysis>
             <harmonic>
-                <numFreq>10</numFreq>
+                <numFreq>20</numFreq>
                 <startFreq>10</startFreq>
                 <stopFreq>1000</stopFreq>
                 <sampling>linear</sampling>
@@ -59,41 +59,46 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                 <regionList>
                     <region name="S_domain"/>
                 </regionList>
+                <bcsAndLoads>
+                    <normalVelocity name="Gamma_exc" value="1" />
+                    <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
+                    <normalVelocity name="Gamma_fix" value="0"/>
+                </bcsAndLoads>
                 <storeResults>
                     <nodeResult type="acouPressure">
                         <allRegions/>
                     </nodeResult>
-                    <sensorArray type="acouPressure" fileName="history/mic1-coupled">
+                    <sensorArray type="acouPressure" fileName="history/mic1-soundhard2">
                         <parametric>
-                            <list comp="x" start="10e-2" stop="10e-2" inc="0"/>
-                            <list comp="y" start="10e-2" stop="10e-2" inc="0"/>
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="1.0" inc="0"/>
                         </parametric>
                     </sensorArray>
- 
                 </storeResults>
             </acoustic>
         </pdeList>
     </sequenceStep>
     
     <!-- mechanic EVs -->
+    <!-- perform the eigenfrequency study of the solid-->
     <sequenceStep index="2">
         <analysis>
-            <harmonic>
-                <numFreq>10</numFreq>
-                <startFreq>10</startFreq>
-                <stopFreq>1000</stopFreq>
-                <sampling>linear</sampling>
-            </harmonic>
+            <eigenFrequency>
+                <isQuadratic>no</isQuadratic>
+                <numModes>10</numModes>
+                <freqShift>0</freqShift>
+                <writeModes>yes</writeModes>
+            </eigenFrequency>
         </analysis>
         <pdeList>
-            <mechanic subType="axi">
+            <mechanic subType="planeStrain">
                 <regionList>
                     <region name="S_scatterer"/>
                 </regionList>
                 <bcsAndLoads>
-                    <fix name="L_s_end">
-                        <!-- the z-component is used to refer to the axial component in an axially symmetrix setup -->
-                        <comp dof="z"/>
+                    <fix name="Gamma_fix">
+                        <comp dof="x" />
+                        <comp dof="y"/>
                     </fix>
                 </bcsAndLoads>
                 <storeResults>
@@ -105,37 +110,46 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
         </pdeList>
     </sequenceStep>
     
-    <!-- coupled EVs -->
+    <!-- The coupled system -->
     <sequenceStep index="3">
         <analysis>
-            <eigenFrequency>
-                <isQuadratic>no</isQuadratic>
-                <!-- the FEAST eigenvalue solver uses contour integration
-                to find all EIGENVALUES (not frequencies!) in an interval -->
-                <minVal>100</minVal>
-                <maxVal>3e+6</maxVal>
-                <writeModes>yes</writeModes>
-            </eigenFrequency>
+            <harmonic>
+                <numFreq>20</numFreq>
+                <startFreq>10</startFreq>
+                <stopFreq>1000</stopFreq>
+                <sampling>linear</sampling>
+            </harmonic>
         </analysis>
         <pdeList>
             <acoustic formulation="acouPressure">
                 <regionList>
-                    <region name="S_a"/>
+                    <region name="S_domain"/>
                 </regionList>
+                <bcsAndLoads>
+                    <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
+                    <normalVelocity name="Gamma_exc" value="1" />
+                </bcsAndLoads>
                 <storeResults>
-                    <!-- add required outputs -->
                     <nodeResult type="acouPressure">
                         <allRegions/>
                     </nodeResult>
+                    <sensorArray type="acouPressure" fileName="history/mic1-coupledsys">
+                        <!-- save result at x = 0 , y = 1-->
+                        <parametric>
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="10.0" inc="0"/>
+                         </parametric>
+                     </sensorArray>
                 </storeResults>
             </acoustic>
-            <mechanic subType="axi">
+            <mechanic subType="planeStrain">
                 <regionList>
-                    <region name="S_s"/>
+                    <region name="S_scatterer"/>
                 </regionList>
                 <bcsAndLoads>
-                    <fix name="L_s_end">
-                        <comp dof="z"/>
+                    <fix name="Gamma_fix">
+                        <comp dof="x"/>
+                        <comp dof="y" />
                     </fix>
                 </bcsAndLoads>
                 <storeResults>
@@ -149,7 +163,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
             <direct>
                 <acouMechDirect>
                     <surfRegionList>
-                        <surfRegion name="L_as"/>
+                        <surfRegion name="Gamma_sep"/> <!-- coupling here-->
                     </surfRegionList>
                 </acouMechDirect>
             </direct>

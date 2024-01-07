@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfsSimulation xmlns="http://www.cfs++.org/simulation" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.cfs++.org/simulation 
+https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd"> 
+
+
+<documentation>
+    <title> Mechanics-Acoustic, Homework 3</title>
+    <authors>
+      <author> Petra Reisz </author>
+    </authors>
+    <date>2023-12-29</date>
+    <keywords>
+      <keyword>mechanic-acoustic</keyword>
+    </keywords>
+    <references> no references </references>
+    <isVerified>no</isVerified>
+    <description>
+    Perform transient simulations with normal velocity excitation of sinBurts with 3
+    periods value, 0.5 fade in and fade out at 624 Hz in two cases
+        1. with rigid body scatterer;
+        2. with flexible body scatterer.
+    Absorbing boundary condition (ABC) is assumed to simulate free field condition at ΓABC
+
+    sinBurst(freq, nperiods, nfadein, nfadeout, timeval) - Creates data for a sine burst signal. 
+    A sine burst signal denotes a sine that will be active during a certain amount of time until it will be 
+    deactivated. Additionally, a fade-in/out can be applied, according to the sin^2 method of the fadeIn to 
+    reduce the higher harmonics of the signal.
+    </description>
+</documentation>
+
+
+
+    <!-- define which files are needed for simulation input & output-->
+    <fileFormats>
+        <input>
+            <cdb fileName="homework3.cdb"/>
+        </input>
+        <output>
+            <hdf5/>
+        </output>
+        <materialData file="mat.xml" format="xml"/>
+    </fileFormats>
+
+    <!-- material assignment -->
+    <domain geometryType="plane">
+        <regionList>
+            <region name="S_domain" material="air"></region>
+            <region name="S_scatterer" material="foam"></region>
+        </regionList>
+    </domain>
+    
+    <!-- sound-hard BC=rigid scatter. -->
+    <sequenceStep index="1">
+        <analysis>
+            <transient>
+                <numSteps>750</numSteps>
+                <deltaT>1e-5</deltaT>
+            </transient>
+        </analysis>
+        <pdeList>
+            <acoustic formulation="acouPotential">
+                <regionList>
+                    <region name="S_domain"/>
+                </regionList>
+                <bcsAndLoads>
+                    <!-- sinBurts with 3 periods value, 0.5 fade in and fade out at 624 Hz-->
+                    <!-- sinBurst(freq, nperiods, nfadein, nfadeout, timeval)-->
+                    <normalVelocity name="Gamma_exc" value="sinBurst(624,3,0.5,0.5,t)"/>
+                    <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
+                    <normalVelocity name="Gamma_fix" value="0"/> <!-- rigid = soundhard-->
+                </bcsAndLoads>
+                <storeResults>
+                    <elemResult type="acouPressure">
+                        <allRegions/>
+                    </elemResult>
+                    <sensorArray type="acouPressure" fileName="history/mic1-soundhard2">
+                        <parametric>
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="1.0" inc="0"/>
+                         </parametric>
+                    </sensorArray>
+                </storeResults>
+            </acoustic>
+        </pdeList>
+    </sequenceStep>
+ 
+
+        <!-- coupled -->
+        <sequenceStep index="2">
+            <analysis>
+                <transient>
+                    <numSteps>750</numSteps>
+                    <deltaT>1e-5</deltaT>
+                </transient>
+            </analysis>
+            <pdeList>
+                <acoustic formulation="acouPotential">
+                  <regionList>
+                    <region name="S_domain"/>
+                  </regionList>
+                  <bcsAndLoads>
+                    <normalVelocity name="Gamma_exc" value="sinBurst(624,3,0.5,0.5,t)"/>
+                    <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />                   
+                  </bcsAndLoads>
+                  <storeResults>
+                    <elemResult type="acouPressure">
+                      <allRegions/>
+                    </elemResult>
+                    <sensorArray type="acouPressure" fileName="history/mic1-flexiblescatt2">
+                        <parametric>
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="1.0" inc="0"/>
+                         </parametric>
+                    </sensorArray>
+                  </storeResults>
+                </acoustic>
+                
+                <mechanic subType="planeStrain">
+                  <regionList>
+                    <region name="S_scatterer"/>
+                  </regionList>
+          
+                  <bcsAndLoads>
+                    <fix name="Gamma_fix">
+                      <comp dof="x"/>
+                      <comp dof="y"/>
+                    </fix>
+                 </bcsAndLoads>
+                  <storeResults>
+                     <nodeResult type="mechDisplacement">
+                      <allRegions/>
+                    </nodeResult>
+                  </storeResults>
+                </mechanic>
+              </pdeList>
+              
+              <couplingList>
+                <direct>
+                  <acouMechDirect>
+                    <surfRegionList>
+                      <surfRegion name="Gamma_sep"/>
+                    </surfRegionList>
+                  </acouMechDirect>
+                </direct>
+              </couplingList>
+          
+              <linearSystems>
+                <system>
+                  <solverList>
+                    <directLU/>
+                  </solverList>
+                </system>
+              </linearSystems>
+        </sequenceStep>
+    
+</cfsSimulation>
