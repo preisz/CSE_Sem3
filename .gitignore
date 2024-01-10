@@ -52,6 +52,7 @@ ManyCores/Ex4/submission_11816863/
 *.iges
 *.cub5
 **/history/
+**/mics_dpdt/
 **/results_hdf5/
 *.info.xml
 *CFS-2023W-Linux*
