@@ -43,6 +43,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
         </regionList>
     </domain>
     
+    <!-- Here as if Scatterer was-->
     <sequenceStep index="1">
         <analysis>
             <harmonic>
@@ -74,6 +75,9 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                             <list comp="y" start="1.0" stop="10.0" inc="0"/>
                         </parametric>
                     </sensorArray> 
+                    <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureNoScatterer" csv="yes" type="acouPressure">
+                        <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2" delimiter="," />
+                    </sensorArray>
                 </storeResults>
             </acoustic>
         </pdeList>
@@ -111,6 +115,9 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                             <list comp="y" start="1.0" stop="10.0" inc="0"/>
                          </parametric>
                     </sensorArray> 
+                    <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureScatterer" csv="yes" type="acouPressure">
+                        <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2" delimiter="," />
+                    </sensorArray>
                 </storeResults>
             </acoustic>
         </pdeList>
