@@ -50,47 +50,88 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
             <region name="S_scatterer" material="foam"></region>
         </regionList>
     </domain>
-    
-    <!-- sound-hard BC=rigid scatter. -->
-    <sequenceStep index="1">
-        <analysis>
-            <transient>
-                <numSteps>319</numSteps> <!-- to get to t = 0.034-->
-                <deltaT>0.0001068</deltaT> <!-- 15 steps per excitation periosd = 1/(fexc *15)-->
-            </transient>
-        </analysis>
-        <pdeList>
-            <acoustic formulation="acouPotential">
-                <regionList>
+ 
+
+        <!-- coupled -->
+        <sequenceStep index="1"> <!--to get to 0.034-->
+            <analysis>
+                <transient>
+                  <numSteps>319</numSteps>
+                  <deltaT>0.0001068</deltaT> <!-- 15 steps per excitation periosd = 1/(fexc *15)-->
+                  </transient>
+            </analysis>
+            <pdeList>
+                <acoustic formulation="acouPotential">
+                  <regionList>
                     <region name="S_domain"/>
-                </regionList>
-                <bcsAndLoads>
-                    <!-- sinBurts with 3 periods value, 0.5 fade in and fade out at 624 Hz-->
+                  </regionList>
+                  <bcsAndLoads>
                     <!-- sinBurst(freq, nperiods, nfadein, nfadeout, timeval)-->
                     <normalVelocity name="Gamma_exc" value="sinBurst(624,3,0.5,0.5,t)"/>
                     <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
                     <normalVelocity name="Gamma_fix" value="0"/> <!-- rigid = soundhard-->
-                </bcsAndLoads>
-                <storeResults>
-                    <elemResult type="acouPressure">
+                  </bcsAndLoads>
+                  <storeResults>
+                      <elemResult type="acouPressure">
                         <allRegions/>
-                    </elemResult> <!-- acoustic pressure at mic1 and mic2-->
-                    <sensorArray type="acouPressure" fileName="history/mic1-soundhard-trans" delimiter="," csv="yes">
+                      </elemResult>
+                      <sensorArray type="acouPressure" fileName="history/mic1-flexiblescat_trans" csv="yes" delimiter=",">
                         <parametric>
                             <list comp="x" start="0.0" stop="0.0" inc="0"/>
                             <list comp="y" start="1.0" stop="1.0" inc="0"/>
-                         </parametric>
+                        </parametric>
                     </sensorArray>
-                    <sensorArray type="acouPressure" fileName="history/mic2-soundhard-trans" delimiter="," csv="yes">
+                    <sensorArray type="acouPressure" fileName="history/mic2-flexiblescat_trans" csv="yes" delimiter=",">
                       <parametric>
                           <list comp="x" start="0.0" stop="0.0" inc="0"/>
                           <list comp="y" start="0.1875" stop="0.1875" inc="0"/>
-                       </parametric>
+                      </parametric>
                   </sensorArray>
-
                 </storeResults>
-            </acoustic>
-        </pdeList>
-    </sequenceStep>
+                </acoustic>
+                
+                <mechanic subType="planeStrain">
+                  <regionList>
+                    <region name="S_scatterer"/>
+                  </regionList>
+          
+                  <bcsAndLoads>
+                    <fix name="Gamma_fix">
+                      <comp dof="x"/>
+                      <comp dof="y"/>
+                    </fix>
+                 </bcsAndLoads>
+                  <storeResults>
+                     <nodeResult type="mechDisplacement">
+                      <allRegions/>
+                    </nodeResult><!-- solid displacement at mic3-->
+                    <sensorArray type="mechDisplacement" fileName="history/mic3-flexiblescat_trans" csv="yes" delimiter=",">
+                      <parametric>
+                          <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                          <list comp="y" start="0.607" stop="0.607" inc="0"/>
+                      </parametric>
+                </sensorArray>
+                  </storeResults>
+                </mechanic>
+              </pdeList>
+              
+              <couplingList>
+                <direct>
+                  <acouMechDirect>
+                    <surfRegionList>
+                      <surfRegion name="Gamma_sep"/>
+                    </surfRegionList>
+                  </acouMechDirect>
+                </direct>
+              </couplingList>
+          
+              <linearSystems>
+                <system>
+                  <solverList>
+                    <directLU/>
+                  </solverList>
+                </system>
+              </linearSystems>
+        </sequenceStep>
     
 </cfsSimulation>
