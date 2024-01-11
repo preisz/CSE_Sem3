@@ -43,55 +43,51 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
         </regionList>
     </domain>
     
-    <!-- Here as if Scatterer was-->
-    <sequenceStep index="1">
-        <analysis>
-            <harmonic>
-                <frequencyList>
-                    <freq value="100" />
-                    <freq value="400" />
-                    <freq value="700" />
-                    <freq value="1000" />
-                </frequencyList>
-         </harmonic>
-        </analysis>
-        <pdeList>
-            <acoustic formulation="acouPressure">
-                <regionList>
-                    <region name="S_domain"/>
-                    <region name="S_scatterer" />
-                </regionList>
-                <bcsAndLoads>
-                    <normalVelocity name="Gamma_exc" value="1" />
-                    <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
-                </bcsAndLoads>
-                <storeResults>
-                    <nodeResult type="acouPressure">
-                        <allRegions/>
-                    </nodeResult>
-                    <sensorArray type="acouPressure" fileName="history/mic1-soundhard-noscatterer">
-                        <parametric>
-                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
-                            <list comp="y" start="1.0" stop="10.0" inc="0"/>
-                        </parametric>
-                    </sensorArray> 
-                    <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureNoScatterer" csv="yes" type="acouPressure">
-                        <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2" delimiter="," />
-                    </sensorArray>
-                </storeResults>
-            </acoustic>
-        </pdeList>
-    </sequenceStep>
+        <!-- Here as if Scatterer was-->
+        <sequenceStep index="1">
+            <analysis>
+                <harmonic>
+                    <numFreq>20</numFreq>
+                    <startFreq>100</startFreq>
+                    <stopFreq>1000</stopFreq>
+                    <sampling>linear</sampling>
+             </harmonic>
+            </analysis>
+            <pdeList>
+                <acoustic formulation="acouPressure">
+                    <regionList>
+                        <region name="S_domain"/>
+                        <region name="S_scatterer" />
+                    </regionList>
+                    <bcsAndLoads>
+                        <normalVelocity name="Gamma_exc" value="1" />
+                        <absorbingBCs volumeRegion="S_domain" name="Gamma_ABC" />
+                    </bcsAndLoads>
+                    <storeResults>
+                        <nodeResult type="acouPressure">
+                            <allRegions/>
+                        </nodeResult>
+                        <sensorArray type="acouPressure" fileName="history/mic1-soundhard-noscatterer">
+                            <parametric>
+                                <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                                <list comp="y" start="1.0" stop="1.0" inc="0"/>
+                            </parametric>
+                        </sensorArray> 
+                        <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureNoScatterer" csv="yes" type="acouPressure">
+                            <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2" delimiter="," />
+                        </sensorArray>
+                    </storeResults>
+                </acoustic>
+            </pdeList>
+        </sequenceStep>
 
     <sequenceStep index="2">
         <analysis>
             <harmonic>
-                <frequencyList>
-                    <freq value="100" />
-                    <freq value="400" />
-                    <freq value="700" />
-                    <freq value="1000" />
-                </frequencyList>
+                <numFreq>4</numFreq>
+                <startFreq>100</startFreq>
+                <stopFreq>1000</stopFreq>
+                <sampling>linear</sampling>
          </harmonic>
         </analysis>
         <pdeList>
@@ -112,7 +108,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                         <!-- save result at x = 0 , y = 1-->
                         <parametric>
                             <list comp="x" start="0.0" stop="0.0" inc="0"/>
-                            <list comp="y" start="1.0" stop="10.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="1.0" inc="0"/>
                          </parametric>
                     </sensorArray> 
                     <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureScatterer" csv="yes" type="acouPressure">

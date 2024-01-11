@@ -73,9 +73,7 @@ def gen_polarplots(data_path, filename, plt_freqList, title):
 
     legendEntries = []
     for plt_freq in plt_freqList:
-        #if (plt_freq == 100 or plt_freq ==1000):
-            #continue
-        legendEntries.append(f'{plt_freq} Hz')
+       legendEntries.append(f'{plt_freq} Hz')
 
     plt.legend(legendEntries, loc=3)
     plt.title(title)
@@ -88,14 +86,16 @@ def gen_polarplots(data_path, filename, plt_freqList, title):
 
 data_path = "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Aucoustic/mics_dpdt"  # Path to mics folder
 files_Coupled = "micArrayResults_1m_acouPressureCoupled"
-files__Rigid = "micArrayResults_1m_acouPressureCoupled"
+files__Rigid = "micArrayResults_1m_acouPressureRigid"
 
 files_Noscat = "micArrayResults_1m_acouPressureNoScatterer"
 files_Scat = "micArrayResults_1m_acouPressureScatterer"
 freqlist1 = [100, 400, 700, 1000]; title1 = "Harmonic analysis, no scatterer"; title2 = "Harmonic analysis, rigid scatterer"
-#gen_polarplots(data_path, files_Coupled)
-#gen_polarplots(data_path, files__Rigid)
+freqlist2 = list( range(100, 1000 + 50, 50 ) )
 
-gen_polarplots(data_path, files_Noscat, freqlist1, title1)
-gen_polarplots(data_path, files_Scat, freqlist1, title2)
+gen_polarplots(data_path, files_Coupled, freqlist2, "Harm coupled")
+gen_polarplots(data_path, files__Rigid, freqlist2, "Harm rigid")
+
+gen_polarplots(data_path, files_Noscat, freqlist2, title1)
+#gen_polarplots(data_path, files_Scat, freqlist1, title2)
 

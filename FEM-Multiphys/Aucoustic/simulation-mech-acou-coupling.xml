@@ -118,7 +118,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
         <analysis>
             <harmonic>
                 <numFreq>20</numFreq>
-                <startFreq>10</startFreq>
+                <startFreq>100</startFreq>
                 <stopFreq>1000</stopFreq>
                 <sampling>linear</sampling>
             </harmonic>
@@ -193,5 +193,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
             </system>
         </linearSystems>
     </sequenceStep>
+
+
     
 </cfsSimulation>
