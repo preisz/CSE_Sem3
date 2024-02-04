@@ -48,7 +48,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     <sequenceStep index="1">
         <analysis>
             <harmonic>
-                <numFreq>50</numFreq>
+                <numFreq>20</numFreq>
                 <startFreq>100</startFreq>
                 <stopFreq>1000</stopFreq>
                 <sampling>linear</sampling>
@@ -66,19 +66,17 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                 </bcsAndLoads>
                 <storeResults>
                     <nodeResult type="acouPressure">
-                        <allRegions />
+                        <allRegions/>
                     </nodeResult>
                     <sensorArray type="acouPressure" fileName="history/mic1-soundhard2" csv="yes" delimiter=",">
                         <parametric>
-                            <list comp="x" start="0.0" stop="0.0" inc="0" />
-                            <list comp="y" start="1.0" stop="1.0" inc="0" />
+                            <list comp="x" start="0.0" stop="0.0" inc="0"/>
+                            <list comp="y" start="1.0" stop="1.0" inc="0"/>
                         </parametric>
                     </sensorArray>
-                    <sensorArray fileName="mics_dpdt/harmonic-coupled/micArrayResults_1m_acouPressureRigid" csv="yes"
-                        type="acouPressure">
-                        <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2"
-                            delimiter="," />
-                    </sensorArray>
+                    <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureRigid" csv="yes" type="acouPressure">
+                        <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2" delimiter="," />
+                </sensorArray>
                 </storeResults>
             </acoustic>
         </pdeList>
@@ -119,7 +117,7 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
     <sequenceStep index="3">
         <analysis>
             <harmonic>
-                <numFreq>50</numFreq>
+                <numFreq>20</numFreq>
                 <startFreq>100</startFreq>
                 <stopFreq>1000</stopFreq>
                 <sampling>linear</sampling>
@@ -145,11 +143,9 @@ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd">
                             <list comp="y" start="1.0" stop="10.0" inc="0"/>
                          </parametric>
                      </sensorArray>
-    
-                    <sensorArray fileName="mics_dpdt/harmonic-coupled/micArrayResults_1m_acouPressureCoupled" csv="yes" type="acouPressure">
+                    <sensorArray fileName="mics_dpdt/micArrayResults_1m_acouPressureCoupled" csv="yes" type="acouPressure">
                             <coordinateFile fileName="coordinates.csv" xCoordColumn="1" yCoordColumn="2" delimiter="," />
                     </sensorArray>
-
                 </storeResults>
             </acoustic>
             <mechanic subType="planeStrain">

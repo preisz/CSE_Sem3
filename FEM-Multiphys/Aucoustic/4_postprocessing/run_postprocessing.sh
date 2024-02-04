@@ -1,4 +1,0 @@
-python3 evaluate_hist_dpdt.py
-python3 evaluate_mics_dpdt.py
-python3 evaluate_hist_PCWE.py
-python3 evaluate_mics_PCWE.py

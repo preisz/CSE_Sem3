@@ -9,21 +9,16 @@ from matplotlib import rc
 # rc('text', usetex=True)
 from scipy.fft import rfft, rfftfreq
 
-plt.rc('font', family='serif')
-rc('font', size=16.0)
-rc('lines', linewidth=1.5)
-rc('legend', fontsize='medium', numpoints=1)  # framealpha=1.0,
-rc('svg', fonttype='none')
+import scipy
+from scipy.fft import rfft, rfftfreq
 
-# - User Input ----------------------------------------------------------------------------------
-
-def gen_polarplots(data_path, filename, plt_freqList, title):
+def gen_polarplots(data_path, filename, plt_freqList, title, indices=None, Herz = None):
     """ create a polar plot of the acoustic pressure at
     the radius of 1 m around the excitation and compare it to sound hard BC
     (at characteristic frequencies)"""
 
     ts = 1e-3  # Sample time in s
-    plotname = filename + ".png"
+    plotname = "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Aucoustic/images/RigidvsNofilename"+ filename + ".png"
 
     flag_savePlots = True
 
@@ -31,12 +26,17 @@ def gen_polarplots(data_path, filename, plt_freqList, title):
 
     coord = []
     p = []
-    #for i in range(1, 21):
-    for i in range(1, len(plt_freqList) + 1):
-        file = f"{data_path}/{filename}-{i}"
-        coord.append(np.loadtxt(f"{data_path}/{filename}-{i}", usecols=[1,2], delimiter=',', dtype=float, skiprows=1))
-        p.append(np.loadtxt(f"{data_path}/{filename}-{i}", usecols=[3], delimiter=',', dtype=float, skiprows=1))
-
+    if indices is None:
+        for i in range(1, len(plt_freqList) + 1):
+            file = f"{data_path}/{filename}-{i}"
+            coord.append(np.loadtxt(f"{data_path}/{filename}-{i}", usecols=[1,2], delimiter=',', dtype=float, skiprows=1))
+            p.append(np.loadtxt(f"{data_path}/{filename}-{i}", usecols=[3], delimiter=',', dtype=float, skiprows=1))
+    else:
+        for i in indices:
+            file = f"{data_path}/{filename}-{i}"
+            coord.append(np.loadtxt(f"{data_path}/{filename}-{i}", usecols=[1,2], delimiter=',', dtype=float, skiprows=1))
+            p.append(np.loadtxt(f"{data_path}/{filename}-{i}", usecols=[3], delimiter=',', dtype=float, skiprows=1))
+        
 
     p = np.array(p)
 
@@ -58,44 +58,40 @@ def gen_polarplots(data_path, filename, plt_freqList, title):
     # - Directivity plot ----------------------------------------------------------------------------------
 
     theta = np.arange(0, np.pi, np.pi / p.shape[1])
-    ax = plt.subplot(111, projection='polar')
+    #ax = plt.subplot(111, projection='polar')
+    plt.figure(figsize=(3,5))
 
     for plt_freq in plt_freqList:
-        #if (plt_freq == 100 or plt_freq ==1000):
-            #continue
-
         index_plt = np.argmin(abs(xf - plt_freq))
         yf_plt = yf[:, index_plt] / max(yf[:, index_plt])
+        plt.polar(theta, yf_plt)
 
-        ax.plot(theta, yf_plt, label="Size 1m")
+    plt.title( Herz+ title)
 
-        plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=10.0)
+    plt.savefig(plotname, bbox_inches='tight', transparent=False)
 
-    legendEntries = []
-    for plt_freq in plt_freqList:
-       legendEntries.append(f'{plt_freq} Hz')
+    #plt.show()
 
-    plt.legend(legendEntries, loc=3)
-    plt.title(title)
 
-    if flag_savePlots:
-        plt.savefig(plotname, bbox_inches='tight', transparent=False)
 
-    plt.show()
+
 
 
 data_path = "/home/petrar/PetraMaster/WS23/CSE_Sem3/FEM-Multiphys/Aucoustic/mics_dpdt"  # Path to mics folder
+
 files_Coupled = "micArrayResults_1m_acouPressureCoupled"
 files__Rigid = "micArrayResults_1m_acouPressureRigid"
 
 files_Noscat = "micArrayResults_1m_acouPressureNoScatterer"
 files_Scat = "micArrayResults_1m_acouPressureScatterer"
-freqlist1 = [100, 400, 700, 1000]; title1 = "Harmonic analysis, no scatterer"; title2 = "Harmonic analysis, rigid scatterer"
-freqlist2 = list( range(100, 1000 + 50, 50 ) )
 
-gen_polarplots(data_path, files_Coupled, freqlist2, "Harm coupled")
-gen_polarplots(data_path, files__Rigid, freqlist2, "Harm rigid")
+freqlist1 = [100]; freqlist2 = [400]; freqlist3 = [700]; freqlist4 = [1000]
+indices_list = [[1],[2],[3],[4]]
 
-gen_polarplots(data_path, files_Noscat, freqlist2, title1)
-#gen_polarplots(data_path, files_Scat, freqlist1, title2)
+info = ["100 Hz ", "400 Hz ","700 Hz ", "1000 Hz "]
 
+
+for (i, fi) in enumerate([ freqlist1, freqlist2, freqlist3, freqlist4  ]):
+    print(fi)
+    gen_polarplots(data_path, files_Scat, freqlist2, "Harmonic analysis, rigid scatterer", indices_list[i], info[i])  
+    gen_polarplots(data_path, files_Noscat, freqlist2, "Harmonic analysis, no scatterer",indices_list[i], info[i])

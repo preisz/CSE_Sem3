@@ -1,20 +1,16 @@
 # Problem Description
-This homework investigates acoustic wave propagation within an open domain featuring a solid scatterer. Through the designated tasks, acoustic scattering is studied in the time and frequency domain. One can observe the influence of
-both stiff and flexible solids on the wave propagation.
+This homework investigates acoustic wave propagation within an open domain featuring a solid scatterer. Through the designated tasks, acoustic scattering is studied in the time and frequency domain. One can observe the influence of both stiff and flexible solids on the wave propagation.
 
-The problem’s geometry is illustrated in the accompanying sketch, with the solid
-scatterer situated in the middle of the acoustic domain. The excitation boundary
-condition is characterized by a uniform normal velocity with an amplitude of 1 at $\Gamma_{e}$. Absorbing boundary condition (ABC) is assumed to simulate free field condition at $\Gamma_{ABC}$.
+The problem’s geometry is illustrated in the accompanying sketch, with the solid scatterer situated in the middle of the acoustic domain. The excitation boundary condition is characterized by a uniform normal velocity with an amplitude of 1 at $\Gamma_{e}$. Absorbing boundary condition (ABC) is assumed to simulate free field condition at $\Gamma_{ABC}$.
 
-The interested frequency range of the study is **100 to 1000 Hz**. The density and compression modulus of air are **1.225 kg/m^3** and **1.4271 · 10E5 Pa**. The flexible
-body is constructed from foam with density, Young modulus and Poisson number of **320 kg/m3**, **35.3 · 10E6 Pa** and **0.383**, respectively.
+The interested frequency range of the study is **100 to 1000 Hz**. The density and compression modulus of air are **1.225 $kg/m^3$** and **$1.4271 · 10^5 Pa$**. The flexible body is constructed from foam with density, Young modulus and Poisson number of **$320 kg/m^3$**, **$35.3 \cdot 10^6 Pa$** and **$0.383$**, respectively.
 
 # 1. Create a suitable mesh for the problem
 • _define the necessary regions and assign meaningful names._
 • _estimate the necessary spatial discretization. (1 Point)_
 • _create an image of your mesh and describe how you choose the discretization (1 Point)_
 
-The wave equation that describes the propagation of acoustic waves, has smooth solution. For this reason, I used higher order elements (quadratic _QUAD_). One should to try avoidung mesh distortions, for this reason I used laplacian smoothing.  <br>
+The wave equation that describes the propagation of acoustic waves, has smooth solution. For this reason, I used higher order elements (quadratic _QUAD_). One should to try avoiding mesh distortions, for this reason I used laplacian smoothing.  <br>
 
 The required discretization is frequency dependent. The meshize $d$ is determined by the highest excitation frequency $f_{max}$ according to 
 
@@ -26,18 +22,122 @@ $$ c = \sqrt{\frac{K}{\rho}} =  \sqrt{\frac{K}{\rho}} = 341.31797 m/s$$
 
 With $K$ being the compression modulus and $\rho$ the densiy of air. Since we consider harmonic analysis between 100 and 1000Hz, $f_{max}= 1000 Hz$ and for $k$ I took $k=10$:
 
-$$ d = \frac{1}{k} \cdot \frac{c}{f_{max}} \approx 0.034m$$.
+$$ d = \frac{1}{k} \cdot \frac{c}{f_{max}} \approx 0.034m$$
+Meshing journal file is [homework3.jou](homework3.jou) and material parameters are specialized in [mat.xml](mat.xml). 
+<br>
 
 # 2. Setup harmonic analysis
 _Perform harmonic simulation_
 _1. without the solid scatterer, i.e., radiation into the free field;_
 _2. with rigid scatterer_
 
-The simulation setup without the rigid scatterer can be found in [simulation-no-scaterrer.xml](simulation-no-scaterrer.xml). When having the rigid scatterer, one can still only go for the solution of the acoustic PDE, with sound hard boundary conditions on the boundary between the air and scatterer domain. This corresponds to the homogenous (natural) Neumann boundary condition.
+The simulation setup can be found in [simulation1.xml](simulation1.xml). When having the rigid scatterer, one can still only go for the solution of the acoustic PDE, with sound hard boundary conditions on the boundary between the air and scatterer domain. This corresponds to the homogenous (natural) Neumann boundary condition (sequence step 1). Thinking of the domain without the scatterer, one assigns also to the scatterer domain air and does not set any boundary conditions on it boundary (sequence step 1)
 
 #### Compare the results by answering the following questions.
-- _plot the pressure field at 100, 400, 700 and 1000 Hz with and without scattering. (1 Point)_
-On the graphics below, the magnitudde of the acousic pressure is illustrated.
+ _Plot the pressure field at 100, 400, 700 and 1000 Hz with and without scattering. (1 Point)_ <br>
+The imaginary acousic pressure is illustrated. Frequencies growing from left to right.
 
-- _at the mentioned frequencies, create polar plots of the acoustic pressure amplitude at a radius of 1 m around the excitation_
+- Without scatterer<br>
+<img src="images/harmonic-noscat-100Hz.png" alt="100Hz" style="width:24%; height:100px;"> <img src="images/harmonic-noscat-400Hz.png" alt="100Hz" style="width:24%; height:100px;"> <img src="images/harmonic-noscat-700Hz.png" alt="700Hz" style="width:24%; height:100px;"> <img src="images/harmonic-noscat-1000Hz.png" alt="100Hz" style="width:24%; height:100px;"> <br><br>
+
+- With rigid scatterer<br>
+<img src="images/harmonic-scat-100Hz.png" alt="100Hz" style="width:24%; height:100px;"> <img src="images/harmonic-scat-400Hz.png" alt="100Hz" style="width:24%; height:100px;"> <img src="images/harmonic-scat-700Hz.png" alt="700Hz" style="width:24%; height:100px;"> <img src="images/harmonic-scat-1000Hz.png" alt="100Hz" style="width:24%; height:100px;"><br><br><br>
+
+_Animate the field results and comment on the differences in the wave propagation (e.g., at 1000 Hz). (1 Point)_
+
+One can see how the rigid scatterer "destroys" the uniformity of the wave fronts. Without the body, there are clear, radial wavefronts whose frequency also increases with the excitation frequency. The rigid body scatters the waves back that are hitting on its boundary, what caueses interference with the other waves coming from the excitation centre. On some places, where it is destructive, leads to lowering the (wave-) pressure field.
+<br>
+
+_At the mentioned frequencies, create polar plots of the acoustic pressure amplitude at a radius of 1 m around the excitation_
+
+The excitations at the frequency $f_i$ are saved in the folder [mics_dpdt](mics_dpdt/) under the name *micArrayResults_1m_acouPressureScatterer-i* or *mics_dpdt/micArrayResults_1m_acouPressureNoScatterer-i* after the simulation run.
+The coordinates of the nodes whose results is to be saved are in [coordinates.csv](coordinates.csv). They where generated by Python commands, that are [Postprocessing.ipynb](Postprocessing.ipynb)
+
+<img src="images/RigidvsNo/imgs.png" alt="100Hz" style="width:97%; height:420px;">
+
+_At what frequencies is the effect of the solid body on the acoustic field more pronounced? Discuss possible reasons. (2 Points)_
+
+They are pronounced at higher frequencies.Possible reasons are that at higher exciting harmonic frequencies there is less time for the wave field to equilibrate/propagate away between two excitation pulses, since the time between them is inversely proportional to the frequency. When excitations come also more often the new waves coming from them interfere with the ones reflected by the rigid scatterer, that makes a bigger difference, when it happens more often.
+
+# 3. Solid coupling
+Here the harmonic analysis was conducted between $100-1000Hz$, and $50$ harmonic excitation frequencies equally distributed in this intervall where considered.
+
+_Plot the acoustic pressure at mic1 (x = 0 and y =1) over frequency for both sound-hard BC and the coupled system. Find the characteristic frequencies at which the results differ. (2 Points)_
+<img src="images/mic1-coupledsys.png" alt="ss" style="width:70%;"> <br>
+There are the frequencies, where there was the biggest deviation of the acoustic pressure between coupled and non-coupled conditions at mic1 and its value:
+| Frequency    | Deviation of Acoupressure |
+|--------------|--------------------------|
+| 797.959184   | 61.552672                |
+| 889.795918   | 17.762775                |
+| 779.591837   | 10.736809                |
+| 651.020408   | 10.733186                |
+| 816.326531   | 9.288787                 |
+
+
+_Similar to the previous step, create a polar plot of the acoustic pressure at the radius of 1 m around the excitation and compare it to sound hard BC (at characteristic frequencies). (1 Point)_
+<br>
+<img src="/images/CoupledvsNo.png" alt="ss" style="width:90%;">
+
+_What are these characteristic frequencies hinting at? (hint: perform the eigenfrequency study of the solid) (2 Points)_
+
+EigenFrequencies in the interested range are the following:
+
+|   | Eigenfrequency in Hz |
+|---|--------------------|
+| 1 | 195.76522 |
+| 2 | 315.04016 |
+| 3 | 386.66960 |
+| 4 | 641.26343 |
+| 5 | 657.35989 |
+| 6 | 784.65584 |
+| 7 | 796.01534 |
+| 8 | 891.81984 |
+
+The characteristic frequencies are in a frequency region, where we find more eigenfrequencies "around" or we are close to an eigenfrequency of the solid. (that is why characteristic frequencies are all around $800 Hz, \, 650Hz$). Here, the solid responses extra strongly on the excitation resulting in in higher displacements, that enhances the coupling term. Not taking it into account (rigid case) results thereby in bigger deviation.<br><br>
+
+_Discuss the results from the eigenfrequency study and compare them to the harmonic results. Why do low natural frequencies not seem to impact the pressure field? (1 Point)_
+The reason can be the same that is discussed in the previous section: interference of the waves at lower frequency makes a smaller difference, since it does not happen so often as at higher frequencies. thereby the difference of the wavefield between coupled/rigid reflection does not make so much difference.
+
+
+_Plot the pressure field and the deformed solid at one of the characteristic frequencies. (1 Point)_
+
+Plotting is at harmonic frequency $797.959 Hz$
+
+<img src="images/coupled-harm-charfreq797Hz-displ.png" alt="100Hz" style="width:47%; height:200px;">  <img src="images/coupled-harm-charfreq797Hz-pressure.png" alt="100Hz" style="width:47%; height:200px;">
+<br><br>
+# 4. Setup transient analysis
+
+Perform transient simulations with normal velocity excitation of sinBurts with 3 periods value, 0.5 fade in and fade out at 624 Hz in two cases
+1. with rigid body scatterer;
+2. with flexible body scatterer.
+
+Compare the results by answering the following questions.
+Simulation setup is in the files [simulation-transient-coupled.xml](simulation-transient-coupled.xml) and [simulation-transient.xml](simulation-transient.xml)
+
+_What time step is necessary to solve these problems? (1 Point)_
+
+One should consider the excitation signal's frequency. In transient analysis, 10-20 timesteps per period are recommended (see lecture slides 7). The excitation frequency $f_e = 624 Hz$. This means for its period $T_e = \frac{1}{f_e}$. To have 15 timesteps in one period, we calculate the timestep $\Delta t$ according to
+
+$$  \Delta t = \frac{T_e}{15} = \frac{1}{f_e \cdot 15} = 0.0001068 sec $$
+<br>
+_Plot the acoustic pressure or potential at mic1 and mic2 (x= 0 , y = f/16) for both cases._
+
+In the plots, first the acoustic pressure is plotted over the entire time domain, then for the first and second time half separately to see the differences better. <br>
+<img src="images/ptrans-mic1.png" alt="100Hz" style="width:47%; height:170px;"> <img src="images/ptrans-mic2.png" alt="100Hz" style="width:47%; height:170px;">
+<img src="images/ptrans-mic1-sublots.png" alt="100Hz" style="width:47%; height:250px;"> <img src="images/ptrans-mic2-sublots.png" alt="100Hz" style="width:47%; height:250px;">
+<br>
+
+_Animate the wave field and plot the field at t = 0.034s. (0.5 Point)_
+Left without, and right with coupling.
+<img src="images/ptrans-tend-rigid.png" alt="100Hz" style="width:47%; height:200px;"> <img src="images/ptrans-tend-coupled.png" alt="100Hz" style="width:47%; height:200px;">
+<br>
+
+_Plot time signal of the solid displacement at mic3. Do you observe any signs of damping? (1 Point)_
+<img src="images/displtrans-mic3.png" alt="100Hz" style="width:47%; height:200px;">
+
+One can observe the damping, since the maximal amplitude of the signal decreases with the time. <br>
+
+_Describe the field results and the differences between these two cases. Discuss possible reasons that cause the differences. (1.5 Points)_
+
+One can see that in case of coupling, the wavefield amplitude does not decrease so strongly with the time as it is the case with rigid scatterer. The reason is that because of the back - coupling of the mechanical field on the acoustic one, causing a positive feedback on the acoustic pressure field that thereby does not decay so fast.
 
