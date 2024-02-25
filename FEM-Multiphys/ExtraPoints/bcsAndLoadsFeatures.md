@@ -48,3 +48,53 @@ Another possible application would be to modify the openCFS result file (with py
 ```
 
 The grid input can be used e.g. as `<displacement>` BC in SmoothPDE and MechPDE.
+
+## Other sequencestep
+
+One can appy this to incorporate boundary conditions according to system state calculated in a previous step. This is especially useful when solving a forward coupled system, such as a typical [heat-mechanics](https://gitlab.com/openCFS/userdocu/-/blob/master/docs/Tutorials/HeatMechCoupling_CantileverBeam/heat-mech.xml?ref_type=heads) problem. Another example can be found for an [electrostatic capacitor](https://gitlab.com/openCFS/Testsuite/-/blob/master/TESTSUIT/Coupledfield/ElecMech/ElecForcesCapacitorStatic2D/ElecForcesCapacitorStatic2D.xml?ref_type=heads).
+
+```xml
+<bcsAndLoads>
+    <thermalStrain name="S_beam">
+        <sequenceStep index="1">
+            <quantity name="heatTemperature" pdeName="heatConduction"/>
+            <timeFreqMapping>
+                <constant step="1"/>
+            </timeFreqMapping>
+        </sequenceStep>
+    </thermalStrain>
+</bcsAndLoads>
+
+```
+
+## externalSimulation
+
+Perform first a simulation run (e.g. a transient one) where `allowPostProc`-status is set. This activates saving of all data, in order to postprocess data afterwards.
+```xml
+   <analysis>
+      <transient>
+        <numSteps>5</numSteps>
+        <deltaT>1e-3</deltaT>
+         <allowPostProc>yes</allowPostProc>
+      </transient>
+    </analysis>
+
+```
+
+Within the next simulation  in a first multisequence step forces of the previous simulation can be applied as force density on the RHS of the considered PDE. Calculate respective quantity from the previous simulation run and apply it as force term on the RHS.
+
+```xml
+    <bcsAndLoads>
+      <forceDensity name="plateV">
+        <externalSimulation inputId="input" sequenceStep="1">
+          <quantity name="magForceLorentzDensity" pdeName="magneticEdge"/>
+          <timeFreqMapping>
+            <continuous interpolation="linear" />
+          </timeFreqMapping>
+        </externalSimulation>
+      </forceDensity>
+  </bcsAndLoads>
+
+```
+
+Examples can be found [here](https://gitlab.com/openCFS/Testsuite/-/tree/master/TESTSUIT/Coupledfield/MagMech/Plate3DEdgeTwoStep?ref_type=heads)
